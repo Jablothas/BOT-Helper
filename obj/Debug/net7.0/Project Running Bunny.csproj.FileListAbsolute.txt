@@ -1,0 +1,15 @@
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Project Running Bunny
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Project Running Bunny.deps.json
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Project Running Bunny.runtimeconfig.json
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Project Running Bunny.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Project Running Bunny.pdb
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.csproj.AssemblyReference.cache
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.GeneratedMSBuildEditorConfig.editorconfig
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.AssemblyInfoInputs.cache
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.AssemblyInfo.cs
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.csproj.CoreCompileInputs.cache
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/refint/Project Running Bunny.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.pdb
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.genruntimeconfig.cache
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/ref/Project Running Bunny.dll
