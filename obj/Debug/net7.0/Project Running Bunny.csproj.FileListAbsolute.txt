@@ -13,3 +13,9 @@
 /Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.pdb
 /Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.genruntimeconfig.cache
 /Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/ref/Project Running Bunny.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Spectre.Console.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/Spectre.Console.Cli.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/de/Spectre.Console.Cli.resources.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/fr/Spectre.Console.Cli.resources.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/bin/Debug/net7.0/sv/Spectre.Console.Cli.resources.dll
+/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/obj/Debug/net7.0/Project Running Bunny.csproj.CopyComplete

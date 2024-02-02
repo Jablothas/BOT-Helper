@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Dk1Ncjk5CNFhCBz71cGmSvOV0UBkEvUXjNWa+ncrDGo4LlQbSos7dw0w1NJksX4Z+as1p6TK+k6H/zDYIHyxRQ==",
+  "dgSpecHash": "cwXLJJvrTMBdHmdX0kEfhszoFzo5RYAxBRiZhokMDsjP/XxZ0Dtmm3Xde+qWoPSoVVDICPUEgIoyFfOBaPNChg==",
   "success": true,
   "projectFilePath": "/Users/Jablo/Documents/Source/Berufsschule/Project Running Bunny/Project Running Bunny.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/jablo/.nuget/packages/spectre.console/0.48.0/spectre.console.0.48.0.nupkg.sha512",
+    "/Users/jablo/.nuget/packages/spectre.console.cli/0.48.0/spectre.console.cli.0.48.0.nupkg.sha512",
+    "/Users/jablo/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512"
+  ],
   "logs": []
 }
