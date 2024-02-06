@@ -2,10 +2,10 @@ using System.Runtime.CompilerServices;
 
 namespace running_bunny
 {
-    public partial class Form1 : Form
+    public partial class MainLayout : Form
     {
         static String FilePath = string.Empty;
-        public Form1()
+        public MainLayout()
         {
             InitializeComponent();
         }

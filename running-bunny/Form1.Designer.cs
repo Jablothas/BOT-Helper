@@ -1,6 +1,6 @@
 ﻿namespace running_bunny
 {
-    partial class Form1
+    partial class MainLayout
     {
         /// <summary>
         ///  Required designer variable.
@@ -172,14 +172,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Bitte die .csv-Datei hochladen";
             // 
-            // Form1
+            // MainLayout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 561);
             this.Controls.Add(this.contentPanel);
             this.Controls.Add(this.headerPnl);
-            this.Name = "Form1";
+            this.Name = "MainLayout";
             this.Text = "Running Bunny App <dev>";
             this.headerPnl.ResumeLayout(false);
             this.titleBackgroundPanel.ResumeLayout(false);
