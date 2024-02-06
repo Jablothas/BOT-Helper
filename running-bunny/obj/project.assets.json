@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pja.GYPSILON\\source\\repos\\running-bunny\\running-bunny\\running-bunny.csproj",
+      "projectUniqueName": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
       "projectName": "running-bunny",
-      "projectPath": "C:\\Users\\pja.GYPSILON\\source\\repos\\running-bunny\\running-bunny\\running-bunny.csproj",
+      "projectPath": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
       "packagesPath": "C:\\Users\\pja.GYPSILON\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pja.GYPSILON\\source\\repos\\running-bunny\\running-bunny\\obj\\",
+      "outputPath": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
