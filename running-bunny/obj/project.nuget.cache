@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "C+TRG2jxc/liS8bKEzZBtqWFBzbtduzsEx/QIHlm2wTud46d1DnHHO72KaxQxs+l1GNarr0ZmX/aswpaCs3adg==",
+  "dgSpecHash": "mv4mhO2XEVOomp+DpUU5AenFSl7a0nR2e7eY8XgDhj2tIpvTmbDHUfrDmP3Uety6tUDU0C1lYYP9dlQ/E36hEg==",
   "success": true,
-  "projectFilePath": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\Emanuel\\Documents\\source\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Emanuel\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.26\\microsoft.windowsdesktop.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\Emanuel\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\Emanuel\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.26\\microsoft.aspnetcore.app.ref.6.0.26.nupkg.sha512",
+    "C:\\Users\\Emanuel\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.26\\microsoft.netcore.app.host.win-x64.6.0.26.nupkg.sha512"
+  ],
   "logs": []
 }

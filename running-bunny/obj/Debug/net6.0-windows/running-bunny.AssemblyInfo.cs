@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("running-bunny")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19aea93addbf72e5c87801fb5444a828957dd837")]
 [assembly: System.Reflection.AssemblyProductAttribute("running-bunny")]
 [assembly: System.Reflection.AssemblyTitleAttribute("running-bunny")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
