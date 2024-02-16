@@ -1,3 +1,4 @@
+using running_bunny.CSV;
 using System.Runtime.CompilerServices;
 
 namespace running_bunny
@@ -52,6 +53,7 @@ namespace running_bunny
             if (File.Exists(FilePath))
             {
                 // Starting point for anna, emanuel & kevin
+                var data = ExcelConverter.ReadExcel(FilePath);
             }
         }
     }
