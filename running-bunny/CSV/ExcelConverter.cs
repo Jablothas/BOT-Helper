@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,21 +22,28 @@ namespace running_bunny.CSV
             xlWorksheet.Activate();
 
             Excel.Range usedRowRange = xlWorksheet.UsedRange;
-            int maxRowCount = usedRowRange.Row + usedRowRange.Rows.Count - 1 - 1; //Zusätzlich, weil die erste Zeile Header sind
+            int maxRowCount = usedRowRange.Row + usedRowRange.Rows.Count - 1;
 
             Excel.Range usedColRange = xlWorksheet.UsedRange;
             int maxColCount = usedColRange.Column + usedColRange.Columns.Count - 1;
 
-            string[,] data = new string[maxRowCount, maxColCount];
+            //Abzug von erster Zeile wegen Headern
+            string[,] data = new string[maxRowCount - 1, maxColCount];
 
             //Durch die Zeilen iterieren
             //Achtung: Einlesen beginnt erst ab zweiter Zeile wegen den Headern
-            for (int rowCount = 2; rowCount < maxRowCount; rowCount++)
+            for (int rowCount = 2; rowCount <= maxRowCount; rowCount++)
             {
                 //Durch die Spalten iterieren
-                for (int colCount = 1; colCount < maxColCount; colCount++)
+                for (int colCount = 1; colCount <= maxColCount; colCount++)
                 {
-                    data[rowCount - 2, colCount - 1] = xlWorksheet.Cells[rowCount, colCount].Value.ToString();
+                    object entry = xlWorksheet.Cells[rowCount, colCount].Value;
+                    if (entry != null)
+                    {
+#pragma warning disable CS8601 // Mögliche Nullverweiszuweisung.
+                        data[rowCount - 2, colCount - 1] = entry.ToString();
+#pragma warning restore CS8601 // Mögliche Nullverweiszuweisung.
+                    }
                 }
             }
             xlWorkbook.Close();
