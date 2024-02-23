@@ -16,9 +16,16 @@ namespace running_bunny.Business
             //Anna, bis zum 23.02
             return new List<Schueler>();
         }
-        private List<Unternehmen> UnternehmenErstellen(string[,] excel) {
-            //Kevin, bis zum 23.02
-            return new List<Unternehmen>(); }
+        private List<Unternehmen> UnternehmenErstellen(string[,] excel)
+        {
+            List<Unternehmen> liste = new List<Unternehmen>();
+            for (int row = 0; row < excel.GetLength(0); row++)
+            {
+                liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+            }
+
+            return liste;
+        }
         private List<Raum> RaumErstellen(string[,] excel) {
             //Emmanuel, bis zum 23.02
             return new List<Raum>(); }
@@ -76,6 +83,7 @@ namespace running_bunny.Business
         }
         private Excel.Workbook UnternehmenAnwesenheitsExcel()
         {
+
             return new Excel.Workbook();
 
             //Option: Excel in Word konvertieren
