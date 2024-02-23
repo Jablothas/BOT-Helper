@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj": {}
+    "D:\\CodeUndKram\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj": {}
   },
   "projects": {
-    "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj": {
+    "D:\\CodeUndKram\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
+        "projectUniqueName": "D:\\CodeUndKram\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
         "projectName": "running-bunny",
-        "projectPath": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
-        "packagesPath": "C:\\Users\\pja.GYPSILON\\.nuget\\packages\\",
-        "outputPath": "D:\\repos\\pja.sandbox\\sud\\Project-Running-Bunny\\running-bunny\\obj\\",
+        "projectPath": "D:\\CodeUndKram\\Project-Running-Bunny\\running-bunny\\running-bunny.csproj",
+        "packagesPath": "C:\\Users\\al106\\.nuget\\packages\\",
+        "outputPath": "D:\\CodeUndKram\\Project-Running-Bunny\\running-bunny\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\pja.GYPSILON\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\al106\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -62,7 +62,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
