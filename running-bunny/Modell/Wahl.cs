@@ -8,7 +8,13 @@ namespace running_bunny.Modell
 {
     public class Wahl
     {
-        public int Prio { get; set; }
+        public int Prioritaet { get; set; }
         public string Firma { get; set; }
+
+        public Wahl(int Prioritaet, string Firma)
+        {
+            this.Prioritaet = Prioritaet;
+            this.Firma = Firma;
+        }
     }
 }
