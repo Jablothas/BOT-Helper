@@ -8,7 +8,7 @@ namespace running_bunny.Modell
 {
     public class Wahl
     {
-        public int Prio { get; set; }
-        public string Firma { get; set; }
+        public int Prioritaet { get; set; }
+        public int FirmenId { get; set; }
     }
 }
