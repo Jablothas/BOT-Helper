@@ -11,7 +11,7 @@ namespace running_bunny.Modell
         public string Vorname { get; set; }
         public string Nachname { get; set; }
 
-        public  Wahl[] wuensche{ get; set; }
+        public  Wahl[] Wuensche{ get; set; }
         public string Klasse { get; set; }
        
     }
