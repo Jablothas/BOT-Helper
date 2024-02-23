@@ -10,13 +10,22 @@ namespace running_bunny.Business
 {
     public class Verarbeitung
     {
-        public void run() { }
-        private List<Schueler> SchuelerErstellen(string[,] excel) { return new List<Schueler>(); }
-        private List<Unternehmen> UnternehmenErstellen(string[,] excel) { return new List<Unternehmen>(); }
-        private List<Raum> RaumErstellen(string[,] excel) { return new List<Raum>(); }
+        public static void run() { }
+        private List<Schueler> SchuelerErstellen(string[,] excel) 
+        {
+            //Anna, bis zum 23.02
+            return new List<Schueler>();
+        }
+        private List<Unternehmen> UnternehmenErstellen(string[,] excel) {
+            //Kevin, bis zum 23.02
+            return new List<Unternehmen>(); }
+        private List<Raum> RaumErstellen(string[,] excel) {
+            //Emmanuel, bis zum 23.02
+            return new List<Raum>(); }
 
         private void Algorithmus()
         {
+
             //Zuordnung Raum-Schüler
 
         }
@@ -58,9 +67,18 @@ namespace running_bunny.Business
             xlWorkbook.Close();
             return data;
         }
-        private Excel.Workbook CreateExcel()
+        private Excel.Workbook CreateSchuelerExcel()
+        {
+            
+            return new Excel.Workbook();
+
+            //Option: Excel in Word konvertieren
+        }
+        private Excel.Workbook UnternehmenAnwesenheitsExcel()
         {
             return new Excel.Workbook();
+
+            //Option: Excel in Word konvertieren
         }
 
 
