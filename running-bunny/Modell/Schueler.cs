@@ -10,7 +10,9 @@ namespace running_bunny.Modell
     {
         public string Vorname { get; set; }
         public string Nachname { get; set; }
-        public List<Wahl> Wahlen { get; set; } = new List<Wahl>();
+
+        public List<Wahl> Wuensche { get; set; } = new List<Wahl>();
         public string Klasse { get; set; }
+       
     }
 }
