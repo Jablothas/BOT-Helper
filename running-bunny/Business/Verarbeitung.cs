@@ -60,7 +60,7 @@ namespace running_bunny.Business
                         {
                             throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
                         }
-                        schueler.Wahlen.Add(new Wahl { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
+                        schueler.Wuensche.Add(new Wahl { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
                     }
                 }
                 schuelerListe.Add(schueler);
