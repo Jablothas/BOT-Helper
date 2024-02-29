@@ -19,9 +19,11 @@ namespace running_bunny.Business
         private List<Unternehmen> UnternehmenErstellen(string[,] excel) {
             //Kevin, bis zum 23.02
             return new List<Unternehmen>(); }
-        private List<Raum> RaumErstellen(string[,] excel) {
-            //Emmanuel, bis zum 23.02
-            return new List<Raum>(); }
+        private List<Raum> RaumErstellen(string[,] excel) 
+        {
+            //Emanuel, bis zum 23.02
+            return new List<Raum>(); 
+        }
 
         private void Algorithmus()
         {
