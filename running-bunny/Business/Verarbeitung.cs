@@ -19,15 +19,69 @@ namespace running_bunny.Business
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
         {
-            //Anna, bis zum 23.02
-            return new List<Schueler>();
+            //Prüfen, ob die Datei das richtige Format besitzt
+            var colCount = excel.GetLength(1);
+
+            //Mindestangaben: Klassen, Name, Vorname
+            if (colCount < 3 || colCount > 9)
+            {
+                throw new ArgumentException("Die Schüler-Datei enthält eine falsche Anzahl an Spalten. " +
+                    "Mindestangaben sind Klasse, Name und Vorname. Es können höchstens 6 Wünsche pro Schüler angegeben werden.");
+            }
+
+            var schuelerListe = new List<Schueler>();
+
+            //Iterieren durch die Zeilen
+            for (int zeile = 0; zeile < excel.GetLength(0); zeile++)
+            {
+                var actualExcelLine = zeile + 2;
+
+                //Eintragen der notwendigen Daten
+                var schueler = new Schueler();
+                schueler.Klasse = excel[zeile, 0];
+                schueler.Vorname = excel[zeile, 1];
+                schueler.Nachname = excel[zeile, 2];
+
+                if (string.IsNullOrWhiteSpace(schueler.Klasse)
+                    || string.IsNullOrWhiteSpace(schueler.Vorname)
+                    || string.IsNullOrWhiteSpace(schueler.Nachname))
+                {
+                    throw new ArgumentException($"Die Klasse, der Vorname oder der Nachname sind leer. Fehler in Zeile {actualExcelLine}");
+                }
+
+                //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
+                for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
+                {
+                    var prio = spalte - 2;
+                    var unternehmenId = excel[zeile, spalte];
+                    if (!string.IsNullOrWhiteSpace(unternehmenId))
+                    {
+                        if (!int.TryParse(unternehmenId, out var unternehmendIdAsInt))
+                        {
+                            throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
+                        }
+                        schueler.Wuensche.Add(new Wahl { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
+                    }
+                }
+                schuelerListe.Add(schueler);
+            }
+            return schuelerListe;
         }
-        private List<Unternehmen> UnternehmenErstellen(string[,] excel) {
-            //Kevin, bis zum 23.02
-            return new List<Unternehmen>(); }
-        private List<Raum> RaumErstellen(string[,] excel) {
+        private List<Unternehmen> UnternehmenErstellen(string[,] excel)
+        {
+            List<Unternehmen> liste = new List<Unternehmen>();
+            for (int row = 0; row < excel.GetLength(0); row++)
+            {
+                liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+            }
+
+            return liste;
+        }
+        private List<Raum> RaumErstellen(string[,] excel)
+        {
             //Emmanuel, bis zum 23.02
-            return new List<Raum>(); }
+            return new List<Raum>();
+        }
 
         private void Algorithmus()
         {
