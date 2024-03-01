@@ -1,9 +1,6 @@
 ﻿using running_bunny.Modell;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace running_bunny.Business
@@ -13,8 +10,18 @@ namespace running_bunny.Business
         public void run(string schuelerFilePath, string veranstalterFilePath, string raumFilePath)
         {
             //TODO: Methoden static machen? Was Vor- und Nachteile?
+
+
             var schuelerExcel = ReadExcel(schuelerFilePath);
             var schuelerListe = SchuelerErstellen(schuelerExcel);
+
+            var unternehmensExcel = ReadExcel(veranstalterFilePath);
+            var unternehmensListe = UnternehmenErstellen(unternehmensExcel);
+
+            var raumExcel = ReadExcel(raumFilePath);
+            var raumListe = RaumErstellen(raumExcel);
+
+
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -75,8 +82,7 @@ namespace running_bunny.Business
             {
                 try
                 {
-                    liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
-
+                    liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
                 }
                 catch (ArgumentNullException)
                 {
@@ -93,7 +99,6 @@ namespace running_bunny.Business
 
                     throw;
                 }
-
             }
 
             return liste;
@@ -106,11 +111,8 @@ namespace running_bunny.Business
 
         private void Algorithmus()
         {
-
+            //Aufrufe von externen Klassen -> Zeitplanerstellung
             //Zuordnung Raum-Schüler
-
-            //
-
         }
         private static string[,] ReadExcel(string filepath)
         {

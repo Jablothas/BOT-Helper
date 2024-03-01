@@ -9,5 +9,6 @@ namespace running_bunny.Modell
     public class Raum
     {
         public string Bezeichnung { get; set; }
+        public int Kapazitaet { get; set; }
     }
 }

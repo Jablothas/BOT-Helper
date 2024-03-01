@@ -8,7 +8,7 @@ namespace running_bunny.Modell
 {
     public class Unternehmen
     {
-        public Unternehmen(int nummer, String unternehmensName, int teilnehmer, int veranstaltungen, Char fruehsteZeit)
+        public Unternehmen(int nummer, String unternehmensName, string fachrichtung, int teilnehmer, int veranstaltungen, Char fruehsteZeit)
         {
             Nummer = nummer;
             UnternehmensName = unternehmensName;
@@ -18,9 +18,9 @@ namespace running_bunny.Modell
         }
         public int Nummer { get; set; }
         public String UnternehmensName { get; set; }
+        public string Fachrichtung { get; set; }
         public int Teilnehmer { get; set; }
         public int Verantstaltung { get; set; }
         public Char FruehsterZeit { get; set; }
-
     }
 }
