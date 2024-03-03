@@ -1,4 +1,5 @@
 ﻿using running_bunny.Modell;
+using System;
 using System.Text;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -77,10 +78,29 @@ namespace running_bunny.Business
         }
         private List<Unternehmen> UnternehmenErstellen(string[,] excel)
         {
+            
             List<Unternehmen> liste = new List<Unternehmen>();
             for (int row = 0; row < excel.GetLength(0); row++)
             {
-                liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                try
+                {
+                    liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                }
+                catch (ArgumentNullException)
+                {
+
+                    
+                }
+                catch (FormatException)
+                {
+
+                    throw;
+                }
+                catch (OverflowException)
+                {
+
+                    throw;
+                }
             }
 
             return liste;
@@ -95,8 +115,6 @@ namespace running_bunny.Business
         {
             //Aufrufe von externen Klassen -> Zeitplanerstellung
             //Zuordnung Raum-Schüler
-
-
         }
         private static string[,] ReadExcel(string filepath)
         {
