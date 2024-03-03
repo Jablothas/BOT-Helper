@@ -10,7 +10,6 @@ namespace running_bunny.Business
         {
             //TODO: Methoden static machen? Was Vor- und Nachteile?
 
-
             var schuelerExcel = ReadExcel(schuelerFilePath);
             var schuelerListe = SchuelerErstellen(schuelerExcel);
 
@@ -20,7 +19,8 @@ namespace running_bunny.Business
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
 
-
+            var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, unternehmensListe);
+            var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -55,6 +55,7 @@ namespace running_bunny.Business
                     throw new ArgumentException($"Die Klasse, der Vorname oder der Nachname sind leer. Fehler in Zeile {actualExcelLine}");
                 }
 
+                var wuensche = new List<Wunsch>();
                 //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
                 for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
                 {
@@ -66,9 +67,10 @@ namespace running_bunny.Business
                         {
                             throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
                         }
-                        schueler.Wuensche.Add(new Wahl { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
+                        wuensche.Add(new Wunsch { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
                     }
                 }
+                schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
             }
             return schuelerListe;

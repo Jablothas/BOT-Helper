@@ -11,11 +11,13 @@ namespace running_bunny.Modell
         public Unternehmen(int nummer, String unternehmensName, string fachrichtung, int teilnehmer, int veranstaltungen, Char fruehsteZeit)
         {
             Nummer = nummer;
+            Fachrichtung = fachrichtung;
             UnternehmensName = unternehmensName;
             Teilnehmer = teilnehmer;
             Verantstaltung = veranstaltungen;
             FruehsterZeit = fruehsteZeit;
         }
+
         public int Nummer { get; set; }
         public String UnternehmensName { get; set; }
         public string Fachrichtung { get; set; }

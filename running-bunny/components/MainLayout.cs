@@ -23,32 +23,14 @@ namespace running_bunny
 
         private void InitProcess_Click(object sender, EventArgs e)
         {
-            if(FilePaths.Count != 3)
+            if (FilePaths.Count != 3)
             {
                 MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
                 return;
             }
-            foreach (KeyValuePair<string, string> file in FilePaths)
-            {
-                string key = file.Key;
-                string value = file.Value;
-                switch (key)
-                {
-                    case "SelectStundent":
-                        //
-                        break;
-                    case "SelectRooms":
-                        //
-                        break;
-                    case "SelectCompanies":
-                        //
-                        break;
-                    default:
-                        break;
-                }
-                //var verarbeitung = new Verarbeitung();
-                //verarbeitung.run(FilePath, null, null);
-            }
+
+            var verarbeitung = new Verarbeitung();
+            verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
@@ -67,7 +49,7 @@ namespace running_bunny
                 {
                     btn.BackColor = Color.YellowGreen;
                     btn.Text = $"{Path.GetFileName(filePath)} gespeichert.";
-                    btn.Enabled = false;
+                    btn.Enabled = true;
                     btnReset.Visible = true;
                     FilePaths.Add(btn.Name, filePath);
                 }
@@ -99,7 +81,7 @@ namespace running_bunny
             SelectStudentReset.Visible = false;
             SelectStudent.Enabled = true;
             SelectStudent.BackColor = Color.Silver;
-            FilePaths.Remove("SelectStudent");
+            FilePaths.Remove(nameof(SelectStudent));
             SelectStudent.Text = "Schülerliste hochladen";
         }
 
@@ -113,7 +95,7 @@ namespace running_bunny
             SelectRoomsReset.Visible = false;
             SelectRooms.Enabled = true;
             SelectRooms.BackColor = Color.Silver;
-            FilePaths.Remove("SelectRooms");
+            FilePaths.Remove(nameof(SelectRooms));
             SelectRooms.Text = "Raumliste hochladen";
         }
 
@@ -127,7 +109,7 @@ namespace running_bunny
             SelectCompaniesReset.Visible = false;
             SelectCompanies.Enabled = true;
             SelectCompanies.BackColor = Color.Silver;
-            FilePaths.Remove("SelectCompanies");
+            FilePaths.Remove(nameof(SelectCompanies));
             SelectCompanies.Text = "Unternehmensliste hochladen";
         }
     }

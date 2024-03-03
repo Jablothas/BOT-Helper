@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace running_bunny.Modell
 {
-    public class Wahl
+    public class Wunsch
     {
         public int Prioritaet { get; set; }
         public int FirmenId { get; set; }

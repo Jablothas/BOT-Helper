@@ -1,19 +1,23 @@
 ﻿using running_bunny.Modell;
+using System.Linq;
 
 namespace running_bunny.Business
 {
     public class ZeitplanErstellung
     {
-        public static void ErstelleZeitplan(IEnumerable<Schueler> schueler, IEnumerable<Unternehmen> unternehmen, IEnumerable<Raum> raeume)
+        public IEnumerable<Zeitplan> ErstelleZeitplan(IEnumerable<Schueler> schueler, IEnumerable<Unternehmen> unternehmen, IEnumerable<Raum> raeume)
         {
-            var wuenscheProVeranstaltung = WuenscheProVeranstaltung(schueler, unternehmen);
+            var wuenscheProVeranstaltung = ZaehleWuenscheProVeranstaltung(schueler, unternehmen);
             var zeitpläne = ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheProVeranstaltung, raeume);
 
             //Wo die Zuweisung der Personen vornehmen?
+            return new List<Zeitplan>();
         }
 
-        public static IEnumerable<WuenscheProUnternehmen> WuenscheProVeranstaltung(IEnumerable<Schueler> schueler, IEnumerable<Unternehmen> unternehmen)
+        public static IEnumerable<WuenscheProUnternehmen> ZaehleWuenscheProVeranstaltung(IEnumerable<Schueler> schueler, IEnumerable<Unternehmen> unternehmen)
         {
+            //schueler.Select()
+
             /*Ausgabeobjekt
             Teilschritte: 
                 - Zusammenzählen aller Schülerwünsche für ein Unternehmen (Gruppierung nach Klasse spielt dabei keine Rolle)
