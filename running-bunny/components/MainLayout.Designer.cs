@@ -129,7 +129,6 @@
             // InitProcess
             // 
             InitProcess.BackColor = Color.Silver;
-            InitProcess.Enabled = false;
             InitProcess.FlatStyle = FlatStyle.Flat;
             InitProcess.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             InitProcess.Location = new Point(264, 268);
