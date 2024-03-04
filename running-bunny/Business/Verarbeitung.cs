@@ -1,4 +1,5 @@
-﻿using running_bunny.Modell;
+﻿using Microsoft.Office.Interop.Excel;
+using running_bunny.Modell;
 using System;
 using System.Text;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -107,8 +108,70 @@ namespace running_bunny.Business
         }
         private List<Raum> RaumErstellen(string[,] excel)
         {
-            //Emmanuel, bis zum 23.02
-            return new List<Raum>();
+            // maxZeilen gibt an wieviele Zeilen in der Exceldatei benutzt werden
+            // maxSpalten gibt an wieviele Spalten in der Exceldatei benutzt werden
+            // // var colCount = excel.GetLength(1);
+            int maxZeilen = excel.GetLength(0);
+            int maxSpalten = excel.GetLength(1);
+
+            // Mindestangaben: Raum, Kapazität
+            if (maxSpalten < 2)
+            {
+                throw new ArgumentException("Die Raum-Datei enthält zu wenig Spalten. " +
+                    "Es muss mindestens eine Spalte \"Raum\" und eine Spalte \"Kapazität\" vorhanden sein.");
+            }
+
+            // Kontrolle, ob ein Feld leer ist
+            for (int zeile = 1; zeile <= maxZeilen; zeile++)
+            {
+                for (int spalte = 1; spalte <= maxSpalten; spalte++)
+                {
+                    // Wert der aktuellen Zelle abrufen
+                    string zellenInhalt = excel[zeile, spalte];
+                    //Excel.Range zelle = (Excel.Range)range.Cells[zeile, spalte];
+                    //string cellValue = zelle.Value != null ? zelle.Value.ToString() : "";
+
+                    // Überprüfen, ob die Zelle leer ist
+                    // TODO: leere Felder, Felder mit "" und Felder mit "0" erstellen und testen obs knallt
+                    if (string.IsNullOrEmpty(zellenInhalt) || zellenInhalt.Equals("0"))
+                    {
+                        Console.WriteLine($"Die Zelle in Zeile {zeile}, Spalte {spalte} ist leer " + 
+                            "oder die Kapazität wurde mit \"0\" angegeben.");
+                    }
+                }
+            }
+
+            // Liste mit Raum-Objekten erstellen
+            List<Raum> raumListe = new List<Raum>();
+
+            for (int zeile = 0; zeile < excel.GetLength(0); zeile++)
+            {
+                int aktuelleExcelZeile = zeile + 2;
+
+                //Eintragen der Daten ins Objekt "Raum"
+                Raum objektRaum = new Raum();
+                objektRaum.Bezeichnung = excel[zeile, 0];
+                String raumKapazitaet = excel[zeile, 1];
+                if (int.TryParse(raumKapazitaet, out int kapazitaetAlsInt)) // prüfen ob die Kapazität in einen Int parsen kann
+                {
+                    objektRaum.Kapazitaet = kapazitaetAlsInt; // wenn ja, parsen
+                }
+                else
+                {
+                    // wenn nein, dann Fehlermeldung
+                    // TODO: aktuelle Spalte soll auch angezeigt werden
+                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {aktuelleExcelZeile}");
+                }
+
+                if (string.IsNullOrWhiteSpace(objektRaum.Bezeichnung)
+                    || objektRaum.Kapazitaet == 0)
+                {
+                    throw new ArgumentException($"Die Bezeichnung ist leer oder die Kapazität ist 0. Fehler in Zeile {aktuelleExcelZeile}");
+                }
+
+                raumListe.Add(objektRaum);
+            }
+            return raumListe;
         }
 
         private void Algorithmus()
