@@ -122,9 +122,9 @@ namespace running_bunny.Business
             }
 
             // Kontrolle, ob ein Feld leer ist
-            for (int zeile = 1; zeile <= maxZeilen; zeile++)
+            for (int zeile = 0; zeile < maxZeilen; zeile++)
             {
-                for (int spalte = 1; spalte <= maxSpalten; spalte++)
+                for (int spalte = 0; spalte < maxSpalten; spalte++)
                 {
                     // Wert der aktuellen Zelle abrufen
                     string zellenInhalt = excel[zeile, spalte];
@@ -163,11 +163,11 @@ namespace running_bunny.Business
                     throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {aktuelleExcelZeile}");
                 }
 
-                if (string.IsNullOrWhiteSpace(objektRaum.Bezeichnung)
-                    || objektRaum.Kapazitaet == 0)
-                {
-                    throw new ArgumentException($"Die Bezeichnung ist leer oder die Kapazität ist 0. Fehler in Zeile {aktuelleExcelZeile}");
-                }
+                //if (string.IsNullOrWhiteSpace(objektRaum.Bezeichnung)
+                //    || objektRaum.Kapazitaet == 0)
+                //{
+                //    throw new ArgumentException($"Die Bezeichnung ist leer oder die Kapazität ist 0. Fehler in Zeile {aktuelleExcelZeile}");
+                //}
 
                 raumListe.Add(objektRaum);
             }
