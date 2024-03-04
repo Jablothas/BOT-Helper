@@ -1,4 +1,4 @@
-﻿namespace running_bunny.Modell
+﻿namespace running_bunny.Model
 {
     public class Schueler
     {

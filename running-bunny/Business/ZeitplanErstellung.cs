@@ -1,4 +1,4 @@
-﻿using running_bunny.Modell;
+﻿using running_bunny.Model;
 
 namespace running_bunny.Business
 {

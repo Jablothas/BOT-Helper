@@ -1,7 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using running_bunny.Modell;
-using System;
-using System.Text;
+﻿using running_bunny.Model;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace running_bunny.Business
