@@ -109,7 +109,7 @@
             contentPanel.Dock = DockStyle.Fill;
             contentPanel.Location = new Point(0, 52);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(497, 630);
+            contentPanel.Size = new Size(497, 287);
             contentPanel.TabIndex = 1;
             // 
             // PanelUpload
@@ -123,7 +123,7 @@
             PanelUpload.Controls.Add(SelectStudent);
             PanelUpload.Location = new Point(12, 6);
             PanelUpload.Name = "PanelUpload";
-            PanelUpload.Size = new Size(479, 335);
+            PanelUpload.Size = new Size(479, 274);
             PanelUpload.TabIndex = 5;
             // 
             // InitProcess
@@ -131,7 +131,7 @@
             InitProcess.BackColor = Color.Silver;
             InitProcess.FlatStyle = FlatStyle.Flat;
             InitProcess.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            InitProcess.Location = new Point(264, 268);
+            InitProcess.Location = new Point(264, 208);
             InitProcess.Name = "InitProcess";
             InitProcess.Size = new Size(204, 50);
             InitProcess.TabIndex = 10;
@@ -145,7 +145,7 @@
             SelectCompaniesReset.BackColor = Color.Silver;
             SelectCompaniesReset.FlatStyle = FlatStyle.Flat;
             SelectCompaniesReset.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            SelectCompaniesReset.Location = new Point(418, 124);
+            SelectCompaniesReset.Location = new Point(418, 68);
             SelectCompaniesReset.Name = "SelectCompaniesReset";
             SelectCompaniesReset.Size = new Size(50, 50);
             SelectCompaniesReset.TabIndex = 9;
@@ -159,11 +159,11 @@
             SelectCompanies.BackColor = Color.Silver;
             SelectCompanies.FlatStyle = FlatStyle.Flat;
             SelectCompanies.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            SelectCompanies.Location = new Point(12, 124);
+            SelectCompanies.Location = new Point(12, 68);
             SelectCompanies.Name = "SelectCompanies";
             SelectCompanies.Size = new Size(400, 50);
             SelectCompanies.TabIndex = 8;
-            SelectCompanies.Text = "Unternehmensliste hochladen";
+            SelectCompanies.Text = "Veranstalterliste hochladen";
             SelectCompanies.TextAlign = ContentAlignment.MiddleLeft;
             SelectCompanies.UseVisualStyleBackColor = false;
             SelectCompanies.Click += SelectCompanies_Click;
@@ -173,7 +173,7 @@
             SelectRoomsReset.BackColor = Color.Silver;
             SelectRoomsReset.FlatStyle = FlatStyle.Flat;
             SelectRoomsReset.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            SelectRoomsReset.Location = new Point(418, 68);
+            SelectRoomsReset.Location = new Point(418, 124);
             SelectRoomsReset.Name = "SelectRoomsReset";
             SelectRoomsReset.Size = new Size(50, 50);
             SelectRoomsReset.TabIndex = 7;
@@ -187,7 +187,7 @@
             SelectRooms.BackColor = Color.Silver;
             SelectRooms.FlatStyle = FlatStyle.Flat;
             SelectRooms.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            SelectRooms.Location = new Point(12, 68);
+            SelectRooms.Location = new Point(12, 124);
             SelectRooms.Name = "SelectRooms";
             SelectRooms.Size = new Size(400, 50);
             SelectRooms.TabIndex = 6;
@@ -219,7 +219,7 @@
             SelectStudent.Name = "SelectStudent";
             SelectStudent.Size = new Size(400, 50);
             SelectStudent.TabIndex = 4;
-            SelectStudent.Text = "Schülerliste hochladen";
+            SelectStudent.Text = "Wahlliste hochladen";
             SelectStudent.TextAlign = ContentAlignment.MiddleLeft;
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;
@@ -228,7 +228,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(497, 682);
+            ClientSize = new Size(497, 339);
             Controls.Add(contentPanel);
             Controls.Add(headerPnl);
             FormBorderStyle = FormBorderStyle.None;
