@@ -21,7 +21,7 @@ namespace running_bunny.Business
             var raumListe = RaumErstellen(raumExcel);
 
             var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, unternehmensListe);
-            var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
+            //var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -68,7 +68,7 @@ namespace running_bunny.Business
                         {
                             throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
                         }
-                        wuensche.Add(new Wunsch { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
+                        wuensche.Add(new Wunsch { VeranstaltungsId = unternehmendIdAsInt, Prioritaet = prio });
                     }
                 }
                 schueler.Wuensche = wuensche;
@@ -76,15 +76,15 @@ namespace running_bunny.Business
             }
             return schuelerListe;
         }
-        private List<Unternehmen> UnternehmenErstellen(string[,] excel)
+        private List<Veranstaltung> UnternehmenErstellen(string[,] excel)
         {
             
-            List<Unternehmen> liste = new List<Unternehmen>();
+            List<Veranstaltung> liste = new List<Veranstaltung>();
             for (int row = 0; row < excel.GetLength(0); row++)
             {
                 try
                 {
-                    liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                    liste.Add(new Veranstaltung(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
                 }
                 catch (ArgumentNullException)
                 {

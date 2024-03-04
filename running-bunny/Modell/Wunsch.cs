@@ -9,6 +9,6 @@ namespace running_bunny.Modell
     public class Wunsch
     {
         public int Prioritaet { get; set; }
-        public int FirmenId { get; set; }
+        public int VeranstaltungsId { get; set; }
     }
 }
