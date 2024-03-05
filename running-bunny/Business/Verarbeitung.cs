@@ -1,4 +1,8 @@
-﻿using running_bunny.Model;
+﻿using Microsoft.Office.Interop.Excel;
+using running_bunny.Model;
+using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Media;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace running_bunny.Business
@@ -105,14 +109,11 @@ namespace running_bunny.Business
         }
         private List<Raum> RaumErstellen(string[,] excel)
         {
-            // maxZeilen gibt an wieviele Zeilen in der Exceldatei benutzt werden
-            // maxSpalten gibt an wieviele Spalten in der Exceldatei benutzt werden
-            // // var colCount = excel.GetLength(1);
-            int maxZeilen = excel.GetLength(0);
-            int maxSpalten = excel.GetLength(1);
+            int maxZeilen = excel.GetLength(0); // maxZeilen gibt an wieviele Zeilen in der Exceldatei benutzt werden
+            int maxSpalten = excel.GetLength(1); // maxSpalten gibt an wieviele Spalten in der Exceldatei benutzt werden
 
             // Mindestangaben: Raum, Kapazität
-            if (maxSpalten < 2)
+            if (maxSpalten != 2)
             {
                 throw new ArgumentException("Die Raum-Datei enthält zu wenig Spalten. " +
                     "Es muss mindestens eine Spalte \"Raum\" und eine Spalte \"Kapazität\" vorhanden sein.");
@@ -132,7 +133,7 @@ namespace running_bunny.Business
                     // TODO: leere Felder, Felder mit "" und Felder mit "0" erstellen und testen obs knallt
                     if (string.IsNullOrEmpty(zellenInhalt) || zellenInhalt.Equals("0"))
                     {
-                        Console.WriteLine($"Die Zelle in Zeile {zeile}, Spalte {spalte} ist leer " + 
+                        throw new ArgumentException($"Die Zelle in Zeile {zeile}, Spalte {spalte} ist leer " + 
                             "oder die Kapazität wurde mit \"0\" angegeben.");
                     }
                 }
@@ -157,7 +158,7 @@ namespace running_bunny.Business
                 {
                     // wenn nein, dann Fehlermeldung
                     // TODO: aktuelle Spalte soll auch angezeigt werden
-                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {aktuelleExcelZeile}");
+                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte B und Zeile {aktuelleExcelZeile}");
                 }
 
                 //if (string.IsNullOrWhiteSpace(objektRaum.Bezeichnung)
@@ -168,6 +169,7 @@ namespace running_bunny.Business
 
                 raumListe.Add(objektRaum);
             }
+            Debug.WriteLine("fertig");
             return raumListe;
         }
 
