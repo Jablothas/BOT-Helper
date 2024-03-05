@@ -1,4 +1,6 @@
 ﻿using running_bunny.Model;
+using System.Collections;
+using static running_bunny.Business.ZeitplanErstellung;
 
 namespace running_bunny.Business
 {
@@ -49,8 +51,7 @@ namespace running_bunny.Business
                 schueler.Wuensche.Select(wunsch =>
                 new { wunsch.VeranstaltungsId, SchuelerObj = schueler }))
                     .SelectMany(idUndSchueler => idUndSchueler)
-                    .GroupBy(idUndSchueler => idUndSchueler.VeranstaltungsId)
-                    .ToDictionary(grouping => grouping.Key, grouping => grouping.Select(e => e.SchuelerObj));
+                    .ToLookup(idUndSchueler => idUndSchueler.VeranstaltungsId, idUndSchueler => idUndSchueler.SchuelerObj);
 
             var alleVeranstaltungIds = veranstaltungen.Select(veranstaltung => veranstaltung.Id);
             var schuelerWuenscheOhneVeranstaltung = schuelerNachVeranstalterIds.Where(grouping => !alleVeranstaltungIds.Contains(grouping.Key));
@@ -69,9 +70,7 @@ namespace running_bunny.Business
                     .Select(schueler => schueler.Wuensche.Where(wunsch => wunsch.VeranstaltungsId == veranstaltung.Id)
                         .Select(wunsch => new { wunsch.Prioritaet, schueler }))
                     .SelectMany(e => e)
-                    .GroupBy(e => e.Prioritaet)
-                    .ToDictionary(grouping => grouping.Key,
-                    grouping => grouping.Select(e => e.schueler).ToList());
+                    .ToLookup(e => e.Prioritaet, e => e.schueler);
 
                 var wuenscheProVeranstaltung = new WuenscheProVeranstaltung
                 {
@@ -85,8 +84,7 @@ namespace running_bunny.Business
         }
 
         public static IEnumerable<RaumzuweisungVeranstaltungsKurs> ErmittlungsKurseUndZuweisungZuZeitslotsUndRaum(
-            IEnumerable<WuenscheProVeranstaltung> wuenscheProVeranstaltungen
-            , IEnumerable<Raum> raeume)
+            IEnumerable<WuenscheProVeranstaltung> wuenscheProVeranstaltungen, IEnumerable<Raum> raeume)
         {
             /*Schritte: 
              - Zusammenzählen der Wünsche 1 - 5
@@ -97,22 +95,13 @@ namespace running_bunny.Business
 
             foreach (var wuenscheProVeranstaltung in wuenscheProVeranstaltungen)
             {
-                var veranstaltung = wuenscheProVeranstaltung.Veranstaltung;
 
-                var maxAnzahlMöglicheKurse = Math.Max((int)veranstaltung.FruehsterZeitSlot, veranstaltung.MaxAnzahlVerantstaltungen);
-                //var möglicheKurse = 
-                for(var i = 0; i < maxAnzahlMöglicheKurse; i++)
-                {
-                    
-                }
+                //for(var i = 0; i < maxAnzahlMöglicheKurse; i++)
+                //{
 
-                var maxAnzahlSchuelerAlleKurse = maxAnzahlMöglicheKurse * veranstaltung.MaxAnzahlTeilnehmer;
+                //}
 
-                
-
-
-
-
+                //var maxAnzahlSchuelerAlleKurse = maxAnzahlMöglicheKurse * veranstaltung.MaxAnzahlTeilnehmer;
 
                 //Auffüllen der maximalen Anzahl, dann Abziehen
                 //Zusammenzählen Wünsche Prio 1 - 5
@@ -125,15 +114,53 @@ namespace running_bunny.Business
             return new List<RaumzuweisungVeranstaltungsKurs>();
         }
 
-        //public class MinimalKurs
-        //{
-        //    public int MöglicheAnzahlTeilnehmer { get; set; }
-        //}
+        private bool PassenderWegRaum(WuenscheProVeranstaltung aktuelleVeranstaltung,
+            Queue<WuenscheProVeranstaltung> restlicheVeranstaltungen,
+            IEnumerable<RaumZeit> verfügbareRaumZeit,
+            int priosZuBerücksichtigen)
+        {
+            //Wenn weniger als die ersten 3 Prios berücksichtigt werden, gibt es keinen Weg
+            if (priosZuBerücksichtigen < 3) { return false; }
+
+            var veranstaltung = aktuelleVeranstaltung.Veranstaltung;
+            var wünscheProPrio = aktuelleVeranstaltung.SchuelerProPrio.Where(e => e.Key <= priosZuBerücksichtigen).SelectMany(schueler => schueler).Count();
+
+            var ersteRaumZeit = verfügbareRaumZeit.First();
+            if (!PassenAlleSchuelerInVerbleibendeRaumzeit(ersteRaumZeit.Raum, new Queue<Zeitslot>(ersteRaumZeit.ZeitSlots.OrderByDescending(e => (int)e).ToList()), wünscheProPrio))
+            {
+                restlicheVeranstaltungen.Enqueue(aktuelleVeranstaltung);
+                var nextTryVeranstaltung = restlicheVeranstaltungen.Dequeue();
+                return PassenderWegRaum(nextTryVeranstaltung, restlicheVeranstaltungen, verfügbareRaumZeit, priosZuBerücksichtigen);
+            }
+            
+            return false;
+        }
+
+        private bool PassenAlleSchuelerInVerbleibendeRaumzeit(Raum raum, Queue<Zeitslot> verbleibendeZeitslots, int verbleibendeSchueler)
+        {
+            if (!verbleibendeZeitslots.Any() && verbleibendeSchueler > 0)
+            {
+                return false;
+            }
+            var kapazität = raum.Kapazitaet;
+            if (verbleibendeSchueler < kapazität)
+            {
+                return true;
+            }
+            verbleibendeZeitslots.Dequeue();
+            return PassenAlleSchuelerInVerbleibendeRaumzeit(raum, verbleibendeZeitslots, verbleibendeSchueler - kapazität);
+        }
+
+        private class RaumZeit
+        {
+            public Raum Raum { get; set; }
+            public List<Zeitslot> ZeitSlots { get; set; }
+        }
 
         public class WuenscheProVeranstaltung
         {
             public Veranstaltung Veranstaltung { get; set; }
-            public Dictionary<int, List<Schueler>> SchuelerProPrio { get; set; }
+            public ILookup<int, Schueler> SchuelerProPrio { get; set; }
         }
 
         public class RaumzuweisungVeranstaltungsKurs
@@ -152,9 +179,6 @@ namespace running_bunny.Business
         }
     }
 }
-
-
-
 
 //public static IEnumerable<Zeitplan> ErstellungZeitplanBasierendAufWuenscheMitPrio(IEnumerable<WuenscheProVeranstaltung> wuenscheProUnternehmen, IEnumerable<Raum> raeume)
 //{
