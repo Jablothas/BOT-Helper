@@ -122,6 +122,8 @@ namespace running_bunny.Business
             // Kontrolle, ob ein Feld leer ist
             for (int zeile = 0; zeile < maxZeilen; zeile++)
             {
+                int aktuelleExcelZeile = zeile + 2;
+
                 for (int spalte = 0; spalte < maxSpalten; spalte++)
                 {
                     // Wert der aktuellen Zelle abrufen
@@ -130,12 +132,12 @@ namespace running_bunny.Business
                     // Überprüfen, ob die Zelle leer ist
                     if (string.IsNullOrEmpty(zellenInhalt) || string.IsNullOrWhiteSpace(zellenInhalt))
                     {
-                        throw new ArgumentException($"Die Zelle in Spalte {spalte}, Zeile {zeile} ist leer, " + 
+                        throw new ArgumentException($"Die Zelle in Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile} ist leer, " + 
                             "oder es sind Leerzeichen enthalten.");
                     }
                     else if (zellenInhalt.Equals("0"))
                     {
-                        throw new ArgumentException($"In Spalte {spalte}, Zeile {zeile}, wurde die Kapazität mit  \"0\" angegeben.");
+                        throw new ArgumentException($"In Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile}, wurde die Kapazität mit  \"0\" angegeben.");
                     }
                 }
             }
@@ -158,8 +160,7 @@ namespace running_bunny.Business
                 else
                 {
                     // wenn nein, dann Fehlermeldung
-                    // TODO: aktuelle Spalte soll auch angezeigt werden
-                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte B, Zeile {aktuelleExcelZeile}");
+                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte {GetSpaltenBuchstabe(1)}, Zeile {aktuelleExcelZeile}");
                 }
                  
                 raumListe.Add(objektRaum);
@@ -226,7 +227,19 @@ namespace running_bunny.Business
             //Option: Excel in Word konvertieren
         }
 
+        private string GetSpaltenBuchstabe(int index)
+        {
+            const string buchstaben = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+            var wert = "";
+
+            if (index >= buchstaben.Length)
+                wert += buchstaben[index / buchstaben.Length - 1];
+
+            wert += buchstaben[index % buchstaben.Length];
+
+            return wert;
+        }
 
     }
 }
