@@ -126,15 +126,16 @@ namespace running_bunny.Business
                 {
                     // Wert der aktuellen Zelle abrufen
                     string zellenInhalt = excel[zeile, spalte];
-                    //Excel.Range zelle = (Excel.Range)range.Cells[zeile, spalte];
-                    //string cellValue = zelle.Value != null ? zelle.Value.ToString() : "";
 
                     // Überprüfen, ob die Zelle leer ist
-                    // TODO: leere Felder, Felder mit "" und Felder mit "0" erstellen und testen obs knallt
-                    if (string.IsNullOrEmpty(zellenInhalt) || zellenInhalt.Equals("0"))
+                    if (string.IsNullOrEmpty(zellenInhalt) || string.IsNullOrWhiteSpace(zellenInhalt))
                     {
-                        throw new ArgumentException($"Die Zelle in Zeile {zeile}, Spalte {spalte} ist leer " + 
-                            "oder die Kapazität wurde mit \"0\" angegeben.");
+                        throw new ArgumentException($"Die Zelle in Spalte {spalte}, Zeile {zeile} ist leer, " + 
+                            "oder es sind Leerzeichen enthalten.");
+                    }
+                    else if (zellenInhalt.Equals("0"))
+                    {
+                        throw new ArgumentException($"In Spalte {spalte}, Zeile {zeile}, wurde die Kapazität mit  \"0\" angegeben.");
                     }
                 }
             }
@@ -158,18 +159,12 @@ namespace running_bunny.Business
                 {
                     // wenn nein, dann Fehlermeldung
                     // TODO: aktuelle Spalte soll auch angezeigt werden
-                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte B und Zeile {aktuelleExcelZeile}");
+                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte B, Zeile {aktuelleExcelZeile}");
                 }
-
-                //if (string.IsNullOrWhiteSpace(objektRaum.Bezeichnung)
-                //    || objektRaum.Kapazitaet == 0)
-                //{
-                //    throw new ArgumentException($"Die Bezeichnung ist leer oder die Kapazität ist 0. Fehler in Zeile {aktuelleExcelZeile}");
-                //}
-
+                 
                 raumListe.Add(objektRaum);
             }
-            Debug.WriteLine("fertig");
+            // Debug.WriteLine("fertig");
             return raumListe;
         }
 
