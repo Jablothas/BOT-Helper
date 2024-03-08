@@ -1,4 +1,5 @@
 using running_bunny.Business;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -30,9 +31,7 @@ namespace running_bunny
             }
             // temp for customer presentation
             string filePath = "src.docx";
-            Application wordApp = new Application();
-            wordApp.Visible = true;
-            Document doc = wordApp.Documents.Open(filePath);
+            Process.Start(@"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", filePath);
 
             //var verarbeitung = new Verarbeitung();
             //verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
