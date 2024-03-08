@@ -1,9 +1,8 @@
-﻿using running_bunny.Modell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Office.Interop.Excel;
+using running_bunny.Model;
+using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Media;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace running_bunny.Business
@@ -13,8 +12,18 @@ namespace running_bunny.Business
         public void run(string schuelerFilePath, string veranstalterFilePath, string raumFilePath)
         {
             //TODO: Methoden static machen? Was Vor- und Nachteile?
+
             var schuelerExcel = ReadExcel(schuelerFilePath);
             var schuelerListe = SchuelerErstellen(schuelerExcel);
+
+            var unternehmensExcel = ReadExcel(veranstalterFilePath);
+            var unternehmensListe = UnternehmenErstellen(unternehmensExcel);
+
+            var raumExcel = ReadExcel(raumFilePath);
+            var raumListe = RaumErstellen(raumExcel);
+
+            var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, unternehmensListe);
+            //var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -49,6 +58,7 @@ namespace running_bunny.Business
                     throw new ArgumentException($"Die Klasse, der Vorname oder der Nachname sind leer. Fehler in Zeile {actualExcelLine}");
                 }
 
+                var wuensche = new List<Wunsch>();
                 //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
                 for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
                 {
@@ -60,34 +70,109 @@ namespace running_bunny.Business
                         {
                             throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
                         }
-                        schueler.Wuensche.Add(new Wahl { FirmenId = unternehmendIdAsInt, Prioritaet = prio });
+                        wuensche.Add(new Wunsch { VeranstaltungsId = unternehmendIdAsInt, Prioritaet = prio });
                     }
                 }
+                schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
             }
             return schuelerListe;
         }
-        private List<Unternehmen> UnternehmenErstellen(string[,] excel)
+        private List<Veranstaltung> UnternehmenErstellen(string[,] excel)
         {
-            List<Unternehmen> liste = new List<Unternehmen>();
+            
+            List<Veranstaltung> liste = new List<Veranstaltung>();
             for (int row = 0; row < excel.GetLength(0); row++)
             {
-                liste.Add(new Unternehmen(Int32.Parse(excel[row, 0]), excel[row, 1], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                try
+                {
+                    liste.Add(new Veranstaltung(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                }
+                catch (ArgumentNullException)
+                {
+
+                    
+                }
+                catch (FormatException)
+                {
+
+                    throw;
+                }
+                catch (OverflowException)
+                {
+
+                    throw;
+                }
             }
 
             return liste;
         }
         private List<Raum> RaumErstellen(string[,] excel)
         {
-            //Emmanuel, bis zum 23.02
-            return new List<Raum>();
+            int maxZeilen = excel.GetLength(0); // maxZeilen gibt an wieviele Zeilen in der Exceldatei benutzt werden
+            int maxSpalten = excel.GetLength(1); // maxSpalten gibt an wieviele Spalten in der Exceldatei benutzt werden
+
+            // Mindestangaben: Raum, Kapazität
+            if (maxSpalten != 2)
+            {
+                throw new ArgumentException("Die Raum-Datei enthält zu wenig Spalten. " +
+                    "Es muss mindestens eine Spalte \"Raum\" und eine Spalte \"Kapazität\" vorhanden sein.");
+            }
+
+            // Kontrolle, ob ein Feld leer ist
+            for (int zeile = 0; zeile < maxZeilen; zeile++)
+            {
+                int aktuelleExcelZeile = zeile + 2;
+
+                for (int spalte = 0; spalte < maxSpalten; spalte++)
+                {
+                    // Wert der aktuellen Zelle abrufen
+                    string zellenInhalt = excel[zeile, spalte];
+
+                    // Überprüfen, ob die Zelle leer ist
+                    if (string.IsNullOrEmpty(zellenInhalt) || string.IsNullOrWhiteSpace(zellenInhalt))
+                    {
+                        throw new ArgumentException($"Die Zelle in Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile} ist leer, " + 
+                            "oder es sind Leerzeichen enthalten.");
+                    }
+                    else if (zellenInhalt.Equals("0"))
+                    {
+                        throw new ArgumentException($"In Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile}, wurde die Kapazität mit  \"0\" angegeben.");
+                    }
+                }
+            }
+
+            // Liste mit Raum-Objekten erstellen
+            List<Raum> raumListe = new List<Raum>();
+
+            for (int zeile = 0; zeile < excel.GetLength(0); zeile++)
+            {
+                int aktuelleExcelZeile = zeile + 2;
+
+                //Eintragen der Daten ins Objekt "Raum"
+                Raum objektRaum = new Raum();
+                objektRaum.Bezeichnung = excel[zeile, 0];
+                String raumKapazitaet = excel[zeile, 1];
+                if (int.TryParse(raumKapazitaet, out int kapazitaetAlsInt)) // prüfen ob die Kapazität in einen Int parsen kann
+                {
+                    objektRaum.Kapazitaet = kapazitaetAlsInt; // wenn ja, parsen
+                }
+                else
+                {
+                    // wenn nein, dann Fehlermeldung
+                    throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte {GetSpaltenBuchstabe(1)}, Zeile {aktuelleExcelZeile}");
+                }
+                 
+                raumListe.Add(objektRaum);
+            }
+            // Debug.WriteLine("fertig");
+            return raumListe;
         }
 
         private void Algorithmus()
         {
-
+            //Aufrufe von externen Klassen -> Zeitplanerstellung
             //Zuordnung Raum-Schüler
-
         }
         private static string[,] ReadExcel(string filepath)
         {
@@ -142,7 +227,19 @@ namespace running_bunny.Business
             //Option: Excel in Word konvertieren
         }
 
+        private string GetSpaltenBuchstabe(int index)
+        {
+            const string buchstaben = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+            var wert = "";
+
+            if (index >= buchstaben.Length)
+                wert += buchstaben[index / buchstaben.Length - 1];
+
+            wert += buchstaben[index % buchstaben.Length];
+
+            return wert;
+        }
 
     }
 }
