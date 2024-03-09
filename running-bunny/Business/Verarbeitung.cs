@@ -1,9 +1,11 @@
 ﻿using Microsoft.Office.Interop.Excel;
-using running_bunny.Model;
+using System;
 using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
 using System.Media;
 using Excel = Microsoft.Office.Interop.Excel;
+using running_bunny.Model;
+using running_bunny.RaumZeitPlan;
 
 namespace running_bunny.Business
 {
@@ -17,13 +19,15 @@ namespace running_bunny.Business
             var schuelerListe = SchuelerErstellen(schuelerExcel);
 
             var unternehmensExcel = ReadExcel(veranstalterFilePath);
-            var unternehmensListe = UnternehmenErstellen(unternehmensExcel);
+            var veranstaltungsListe = VeranstelungsListeErstellen(unternehmensExcel);
 
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
 
-            var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, unternehmensListe);
+            //var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, veranstaltungsListe);
             //var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
+            RaumZeitPlanErstellung raumZeitPlanErstellung = new RaumZeitPlanErstellung(schuelerListe, veranstaltungsListe, raumListe);
+
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -78,7 +82,7 @@ namespace running_bunny.Business
             }
             return schuelerListe;
         }
-        private List<Veranstaltung> UnternehmenErstellen(string[,] excel)
+        private List<Veranstaltung> VeranstelungsListeErstellen(string[,] excel)
         {
             
             List<Veranstaltung> liste = new List<Veranstaltung>();
@@ -86,7 +90,13 @@ namespace running_bunny.Business
             {
                 try
                 {
-                    liste.Add(new Veranstaltung(Int32.Parse(excel[row, 0]), excel[row, 1], excel[row, 2], Int32.Parse(excel[row, 3]), Int32.Parse(excel[row, 4]), Char.Parse(excel[row, 5])));
+                    int id = Int32.Parse(excel[row, 0].Trim());
+                    String unternehmensname = excel[row, 1].Trim();
+                    String fachrichtung = excel[row, 2]?.Trim();
+                    int teilnehmer = Int32.Parse(excel[row, 3].Trim());
+                    int veranstaltungen = Int32.Parse(excel[row, 4].Trim());
+                    char fruehsteZeit = Char.Parse(excel[row, 5]);
+                    liste.Add(new Veranstaltung(id, unternehmensname, fachrichtung, teilnehmer, veranstaltungen, fruehsteZeit));
                 }
                 catch (ArgumentNullException)
                 {
@@ -171,9 +181,13 @@ namespace running_bunny.Business
 
         private void Algorithmus()
         {
+
             //Aufrufe von externen Klassen -> Zeitplanerstellung
             //Zuordnung Raum-Schüler
+
+            
         }
+       
         private static string[,] ReadExcel(string filepath)
         {
             //Annahme, dass die Datei existiert
