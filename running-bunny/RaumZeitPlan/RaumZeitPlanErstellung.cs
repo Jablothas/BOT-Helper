@@ -120,6 +120,7 @@ namespace running_bunny.RaumZeitPlan
         private void DebugRaumZeitPlan(List<ZelleRaumZeitplan> raumZeitPlan)
         {
             raumZeitPlan.Sort();
+            Debug.WriteLine("RAUMZEITPLANUNG");
             foreach(ZelleRaumZeitplan raumZeit in raumZeitPlan)
             {
                 
