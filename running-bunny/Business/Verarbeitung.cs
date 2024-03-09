@@ -19,7 +19,7 @@ namespace running_bunny.Business
             var schuelerListe = SchuelerErstellen(schuelerExcel);
 
             var unternehmensExcel = ReadExcel(veranstalterFilePath);
-            var veranstaltungsListe = VeranstelungsListeErstellen(unternehmensExcel);
+            var veranstaltungsListe = VeranstaltungsListeErstellen(unternehmensExcel);
 
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
@@ -82,7 +82,7 @@ namespace running_bunny.Business
             }
             return schuelerListe;
         }
-        private List<Veranstaltung> VeranstelungsListeErstellen(string[,] excel)
+        private List<Veranstaltung> VeranstaltungsListeErstellen(string[,] excel)
         {
             
             List<Veranstaltung> liste = new List<Veranstaltung>();
