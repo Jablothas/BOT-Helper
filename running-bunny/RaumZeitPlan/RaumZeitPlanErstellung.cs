@@ -48,7 +48,8 @@ namespace running_bunny.RaumZeitPlan
                     //veranstaltung.AnzahlWünsche++; //wird setter aufgerufen?
                     
                 }
-                Debug.WriteLine(veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche);
+                veranstaltung.BerechneBenoetigteRaeume();
+                Debug.WriteLine(veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume);
                 
                 Debug.WriteLine("");
             }
@@ -88,27 +89,28 @@ namespace running_bunny.RaumZeitPlan
                 if(zeitslot > 1)
                 {
                     //Zuweisung  Unternehmen mit mehreren Zeitslots = gleiche Räume (1),
-                    //Zuweisung Slots an übrigen Veranstaltungen
+                    //Zuweisung  an übrigen Veranstaltungen ohne Slot bisher (2)
                     foreach(Veranstaltung veranstaltung in VeranstaltungsListe)
                     {
                         if (zeitslot <= (int)veranstaltung.FruehsterZeitSlot) continue;
                         if(veranstaltung.RaeumeBesetzt < veranstaltung.AnzahlRaeume)
                         {
-                            ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Veranstaltung.Id == veranstaltung.Id); //Suche nach vergangen Zellen für (1) 
+                            ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Veranstaltung.Id == veranstaltung.Id && zelle.Raum != null); //Suche nach vergangen Zellen für (1) 
                             ZelleRaumZeitplan zelleRaumZeitplan;
                             if(zelle != null) //(1) gefunden
                             {
                                 zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, zelle.Raum);
                                 RaumListe.Find(raum => raum.Bezeichnung == zelle.Raum.Bezeichnung).IstBelegt = true;
                             }
-                            else
+                            else //(2)
                             {
                                 Raum freierRaum = SucheFreienRaum();
                                 zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, freierRaum);
-                                veranstaltung.RaeumeBesetzt++;
+                                
                             }
-                            
+                            veranstaltung.RaeumeBesetzt++;
                             RaumZeitplan.Add(zelleRaumZeitplan);
+                            //if(zelleRaumZeitplan.Veranstaltung.)
                         }
                     }
                     RaumListe.ForEach(raum => raum.IstBelegt = false);

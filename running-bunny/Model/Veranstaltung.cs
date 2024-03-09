@@ -31,17 +31,21 @@ namespace running_bunny.Model
             }
             set
             {
-                double tmp = value;
-
-                AnzahlRaeume = (int)(tmp / 20);
-
-                if (tmp % 20 >= 15)
-                    AnzahlRaeume++;
-
                 anzahlWünsche = value;
+                
             }
         }
         public int AnzahlRaeume { get; set; } = 0;
         public int RaeumeBesetzt { get; set; }
+
+        public void BerechneBenoetigteRaeume()
+        {
+            double tmp = AnzahlWünsche;
+
+            AnzahlRaeume = (int)(tmp / 20);
+
+            if (tmp % 20 >= 5)
+                AnzahlRaeume++;
+        }
     }
 }
