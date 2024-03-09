@@ -2,7 +2,7 @@
 {
     public enum Zeitslot
     {
-        Ungültig = 0, //Default eines Enums ist immer 0, ungültiger Wert beim Parsen soll ersichtlich sein
+      //  Ungültig = 0, //Default eines Enums ist immer 0, ungültiger Wert beim Parsen soll ersichtlich sein
 
         //Der int-Wert ist die Anzahl der möglichen Veranstaltungen im optimalen Fall
         A = 5,
