@@ -1,9 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
-using System.Media;
-using Excel = Microsoft.Office.Interop.Excel;
+﻿using Excel = Microsoft.Office.Interop.Excel;
 using running_bunny.Model;
 using running_bunny.RaumZeitPlan;
 
@@ -19,7 +14,7 @@ namespace running_bunny.Business
             var schuelerListe = SchuelerErstellen(schuelerExcel);
 
             var unternehmensExcel = ReadExcel(veranstalterFilePath);
-            var veranstaltungsListe = VeranstelungsListeErstellen(unternehmensExcel);
+            var veranstaltungsListe = VeranstaltungsListeErstellen(unternehmensExcel);
 
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
@@ -82,9 +77,9 @@ namespace running_bunny.Business
             }
             return schuelerListe;
         }
-        private List<Veranstaltung> VeranstelungsListeErstellen(string[,] excel)
+        private List<Veranstaltung> VeranstaltungsListeErstellen(string[,] excel)
         {
-            
+
             List<Veranstaltung> liste = new List<Veranstaltung>();
             for (int row = 0; row < excel.GetLength(0); row++)
             {
@@ -101,7 +96,7 @@ namespace running_bunny.Business
                 catch (ArgumentNullException)
                 {
 
-                    
+
                 }
                 catch (FormatException)
                 {
@@ -142,7 +137,7 @@ namespace running_bunny.Business
                     // Überprüfen, ob die Zelle leer ist
                     if (string.IsNullOrEmpty(zellenInhalt) || string.IsNullOrWhiteSpace(zellenInhalt))
                     {
-                        throw new ArgumentException($"Die Zelle in Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile} ist leer, " + 
+                        throw new ArgumentException($"Die Zelle in Spalte {GetSpaltenBuchstabe(spalte)}, Zeile {aktuelleExcelZeile} ist leer, " +
                             "oder es sind Leerzeichen enthalten.");
                     }
                     else if (zellenInhalt.Equals("0"))
@@ -172,7 +167,7 @@ namespace running_bunny.Business
                     // wenn nein, dann Fehlermeldung
                     throw new ArgumentException($"Die Kapazität des Raumes konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Spalte {GetSpaltenBuchstabe(1)}, Zeile {aktuelleExcelZeile}");
                 }
-                 
+
                 raumListe.Add(objektRaum);
             }
             // Debug.WriteLine("fertig");
@@ -185,24 +180,26 @@ namespace running_bunny.Business
             //Aufrufe von externen Klassen -> Zeitplanerstellung
             //Zuordnung Raum-Schüler
 
-            
+
         }
-       
+
         private static string[,] ReadExcel(string filepath)
         {
             //Annahme, dass die Datei existiert
             var xlApp = new Excel.Application();
             Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(@filepath, ReadOnly: true);
 
-            //Nur das erte Worksheet wird eingelesen; TODO: Hinweis, wenn mehrere existieren?
+            //Nur das erste Worksheet wird eingelesen; TODO: Hinweis, wenn mehrere existieren?
             Excel.Worksheet xlWorksheet = xlWorkbook.Worksheets[1];
             xlWorksheet.Activate();
 
-            Excel.Range usedRowRange = xlWorksheet.UsedRange;
-            int maxRowCount = usedRowRange.Row + usedRowRange.Rows.Count - 1;
+            Excel.Range range = xlWorksheet.UsedRange;
+            int maxRowCount = range.Rows.Count;
+            int maxColCount = range.Columns.Count;
 
-            Excel.Range usedColRange = xlWorksheet.UsedRange;
-            int maxColCount = usedColRange.Column + usedColRange.Columns.Count - 1;
+            //Speichern von Workbook in Objekt, damit keine Mehrfachiteration über die Zeilen stattfindet bei jedem Auslesen der Zellen -> bessere Performance
+            object[,] xlWorksheetStored = range.Value2;
+            xlWorkbook.Close();
 
             //Abzug von erster Zeile wegen Headern
             string[,] data = new string[maxRowCount - 1, maxColCount];
@@ -214,7 +211,7 @@ namespace running_bunny.Business
                 //Durch die Spalten iterieren
                 for (int colCount = 1; colCount <= maxColCount; colCount++)
                 {
-                    object entry = xlWorksheet.Cells[rowCount, colCount].Value;
+                    object entry = xlWorksheetStored[rowCount, colCount];
                     if (entry != null)
                     {
 #pragma warning disable CS8601 // Mögliche Nullverweiszuweisung.
@@ -223,9 +220,9 @@ namespace running_bunny.Business
                     }
                 }
             }
-            xlWorkbook.Close();
             return data;
         }
+
         private Excel.Workbook CreateSchuelerExcel()
         {
 
