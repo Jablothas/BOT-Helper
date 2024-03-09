@@ -36,6 +36,12 @@ namespace running_bunny
             // temp for customer presentation
             string filePath = "src.docx";
             Process.Start(@"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", filePath);
+<<<<<<< HEAD
+=======
+
+            var verarbeitung = new Verarbeitung();
+            verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
+>>>>>>> 2273e050bf9ddbc2fadd674daa71cc2e9af74473
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
