@@ -40,7 +40,7 @@ namespace running_bunny.RaumZeitPlan
             {
                 foreach(Schueler schueler in SchuelerListe)
                 {
-                    Wunsch wunsch = schueler.Wuensche.Find(swu => swu.VeranstaltungsId == veranstaltung.Id);
+                    Wunsch wunsch = schueler.Wuensche.Find(swu => swu.VeranstaltungsId == veranstaltung.Id && swu.Prioritaet < 6);
                     if (wunsch != null)
                     {
                         veranstaltung.AnzahlWünsche = veranstaltung.AnzahlWünsche + 1;
@@ -105,8 +105,10 @@ namespace running_bunny.RaumZeitPlan
                             else //(2)
                             {
                                 Raum freierRaum = SucheFreienRaum();
-                                zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, freierRaum);
-                                
+                                if (freierRaum != null)
+                                    zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, freierRaum);
+                                else
+                                    continue;
                             }
                             veranstaltung.RaeumeBesetzt++;
                             RaumZeitplan.Add(zelleRaumZeitplan);
