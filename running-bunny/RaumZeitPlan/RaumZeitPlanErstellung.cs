@@ -8,6 +8,7 @@ using System.Collections;
 using System.Windows;
 using running_bunny.Model;
 using running_bunny.Business;
+using System.Reflection.Metadata.Ecma335;
 
 namespace running_bunny.RaumZeitPlan
 {
@@ -35,9 +36,10 @@ namespace running_bunny.RaumZeitPlan
         }
         private void WunschProVeranstaltung()
         {
-
+            int counter = 0;
             foreach(Veranstaltung veranstaltung in VeranstaltungsListe)
             {
+                counter++;
                 foreach(Schueler schueler in SchuelerListe)
                 {
                     Wunsch wunsch = schueler.Wuensche.Find(swu => swu.VeranstaltungsId == veranstaltung.Id && swu.Prioritaet < 6);
@@ -49,7 +51,7 @@ namespace running_bunny.RaumZeitPlan
                     
                 }
                 veranstaltung.BerechneBenoetigteRaeume();
-                Debug.WriteLine(veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume);
+                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume);
                 
                 Debug.WriteLine("");
             }
@@ -123,12 +125,13 @@ namespace running_bunny.RaumZeitPlan
         }
         private void DebugRaumZeitPlan(List<ZelleRaumZeitplan> raumZeitPlan)
         {
+            int counter = 0;
             raumZeitPlan.Sort();
             Debug.WriteLine("RAUMZEITPLANUNG");
             foreach(ZelleRaumZeitplan raumZeit in raumZeitPlan)
             {
-                
-                Debug.WriteLine("UNTERNEHMEN:" + raumZeit.Veranstaltung.UnternehmensName +  "   VERANSTALTUNG: " + raumZeit.Veranstaltung.Fachrichtung + "  RAUM " + raumZeit.Raum.Bezeichnung + "  ZEITSLOT " + raumZeit.Zeitslot);
+                counter++;
+                Debug.WriteLine($"{counter}."+"  UNTERNEHMEN:" + raumZeit.Veranstaltung.UnternehmensName +  "   VERANSTALTUNG: " + raumZeit.Veranstaltung.Fachrichtung + "  RAUM " + raumZeit.Raum.Bezeichnung + "  ZEITSLOT " + raumZeit.Zeitslot);
             }
         }
 
