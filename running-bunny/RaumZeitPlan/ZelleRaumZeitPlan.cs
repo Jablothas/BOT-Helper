@@ -23,12 +23,16 @@ namespace running_bunny.RaumZeitPlan
 
         public int CompareTo(ZelleRaumZeitplan? vergleichZelle)
         {
-            // A null value means that this object is greater.
-            if (this.Veranstaltung.UnternehmensName[0] > (int)(vergleichZelle.Veranstaltung.UnternehmensName[0]))
-                return 1;
-
-            else
+            for(int i = 0; i< this.Veranstaltung.UnternehmensName.Length; i++)
+            {
+                if ((int)(this.Veranstaltung.UnternehmensName[i]) > (int)(vergleichZelle.Veranstaltung.UnternehmensName[i]))
+                    return 1;
+                if ((int)(this.Veranstaltung.UnternehmensName[i]) == (int)(vergleichZelle.Veranstaltung.UnternehmensName[i]))
+                    continue;
                 return -1;
+            }
+            return 0;
+            
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Windows;
 using running_bunny.Model;
 using running_bunny.Business;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.Office.Interop.Word;
 
 namespace running_bunny.RaumZeitPlan
 {
@@ -17,6 +18,7 @@ namespace running_bunny.RaumZeitPlan
         public List<Schueler> SchuelerListe { get; set; }
         public List<Veranstaltung> VeranstaltungsListe { get; set; }
         public List<Raum> RaumListe { get; set; }
+        public List<ZelleRaumZeitplan> RaumZeitplan { get; set; } = new List<ZelleRaumZeitplan>();
 
 
         //Fields für zufällige RaumSlot Zuweisung
@@ -24,6 +26,7 @@ namespace running_bunny.RaumZeitPlan
         private int zufallsZahl = 0;
         private Raum freierRaum;
         private String[] arrayFuerZufall = null;
+        private bool istgemischt = false;
 
         public RaumZeitPlanErstellung(List<Schueler> schuelerListe, List<Veranstaltung> veranstaltungsListe, List<Raum> raumListe)
         {
@@ -59,10 +62,6 @@ namespace running_bunny.RaumZeitPlan
         }
         private void RaumZeitPlanZuweisung()
         {
-
-            List<ZelleRaumZeitplan> RaumZeitplan = new List<ZelleRaumZeitplan>();
-
-
             foreach (int zeitslot in Enum.GetValues(typeof(Zeitslot)))
             {
                 Zeitslot tmpZeitslot = (Zeitslot)Enum.Parse(typeof(Zeitslot), zeitslot.ToString());
@@ -137,29 +136,20 @@ namespace running_bunny.RaumZeitPlan
 
         private Raum SucheFreienRaum()
         {
-            //Zufällige Zuweisung unvollständig!
-            //if(arrayFuerZufall == null)
-            //{
-            //    arrayFuerZufall = new String[RaumListe.Count];
-            //    for(int i = 0; i< RaumListe.Count; i++)
-            //    {
-            //        arrayFuerZufall[i] = RaumListe.ElementAt(i).Bezeichnung;
-            //    }
-            //}
-
-            //while (true)
-            //{
-            //    zufallsZahl = random.Next(arrayFuerZufall.Length);
-            //    freierRaum = RaumListe.ElementAt(zufallsZahl);
-            //    if (freierRaum.IstBelegt == true)
-            //        arrayFuerZufall[zufallsZahl] = null;
-            //    else
-            //    {
-            //        freierRaum.IstBelegt = true;
-            //        return freierRaum;
-            //    }
-
-            //}
+            //mischt die Raumliste vorab
+            if (istgemischt == false)
+            {
+                int n = RaumListe.Count;
+                while (n > 1)
+                {
+                    n--;
+                    int k = random.Next(n + 1);
+                    Raum raum = RaumListe[k];
+                    RaumListe[k] = RaumListe[n];
+                    RaumListe[n] = raum;
+                }
+                istgemischt = true;
+            }
 
             foreach(Raum raum in RaumListe)
             {
