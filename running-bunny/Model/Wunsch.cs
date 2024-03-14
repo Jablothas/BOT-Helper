@@ -6,6 +6,6 @@ namespace running_bunny.Model
     {
         public int Prioritaet { get; set; }
         public int VeranstaltungsId { get; set; }
-        public ZelleRaumZeitplan zelle {get; set; }
+        public ZelleRaumZeitplan zelle { get; set; } = null;
     }
 }

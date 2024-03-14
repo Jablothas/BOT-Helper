@@ -21,6 +21,22 @@ namespace running_bunny.Model
         public int MaxAnzahlTeilnehmer { get; set; }
         public int MaxAnzahlVerantstaltungen { get; set; }
         public RaumZeitPlan.Zeitslot FruehsterZeitSlot { get; set; }
+        public bool IstVoll { get; set; } = false;
+
+        private int teilnehmerzahlMomentan = 0;
+        public int TeilnehmerzahlMomentan
+        {
+            get
+            {
+                return teilnehmerzahlMomentan; 
+            }
+            set
+            {
+                teilnehmerzahlMomentan = value;
+                if (teilnehmerzahlMomentan == MaxAnzahlTeilnehmer)
+                    IstVoll = true;
+            }
+        }
 
         private int anzahlWünsche = 0;
         public int AnzahlWünsche 
@@ -41,11 +57,15 @@ namespace running_bunny.Model
         public void BerechneBenoetigteRaeume()
         {
             double tmp = AnzahlWünsche;
+            int tmpAnzahlRaeume = (int)(tmp / 20);
 
-            AnzahlRaeume = (int)(tmp / 20);
+            if(tmpAnzahlRaeume <= MaxAnzahlVerantstaltungen)
+                AnzahlRaeume = tmpAnzahlRaeume;
 
             if (tmp % 20 >= 5)
-                AnzahlRaeume++;
+                tmpAnzahlRaeume++;
+            if (tmpAnzahlRaeume <= MaxAnzahlVerantstaltungen)
+                AnzahlRaeume = tmpAnzahlRaeume;
         }
     }
 }
