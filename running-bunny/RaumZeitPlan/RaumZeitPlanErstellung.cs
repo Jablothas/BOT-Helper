@@ -54,9 +54,7 @@ namespace running_bunny.RaumZeitPlan
                     
                 }
                 veranstaltung.BerechneBenoetigteRaeume();
-                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume);
-                
-                Debug.WriteLine("");
+                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume + "\n");
             }
             Debug.WriteLine("///////////////////////////"); Debug.WriteLine("///////////////////////////");
         }

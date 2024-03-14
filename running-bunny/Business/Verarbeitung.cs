@@ -1,7 +1,7 @@
 ﻿using Excel = Microsoft.Office.Interop.Excel;
 using running_bunny.Model;
 using running_bunny.RaumZeitPlan;
-
+using running_bunny.WunschRaumZeitPlanZuweisung;
 namespace running_bunny.Business
 {
     public class Verarbeitung
@@ -22,6 +22,11 @@ namespace running_bunny.Business
             //var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, veranstaltungsListe);
             //var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
             RaumZeitPlanErstellung raumZeitPlanErstellung = new RaumZeitPlanErstellung(schuelerListe, veranstaltungsListe, raumListe);
+
+            WunschRaumZeitPlanZuweisungErstellung wunschRaumZeitPlanZuweisungErstellung = new WunschRaumZeitPlanZuweisungErstellung
+                                                                                                (raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
+            List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
+            List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplanListe;
 
         }
 
@@ -58,18 +63,38 @@ namespace running_bunny.Business
                 }
 
                 var wuensche = new List<Wunsch>();
+                Wunsch wunsch = null;
                 //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
                 for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
                 {
                     var prio = spalte - 2;
                     var unternehmenId = excel[zeile, spalte];
+                    switch (prio)
+                    {
+                        case 1: wunsch = new WunschEins(); break;
+
+                        case 2: wunsch = new WunschZwei(); break;
+
+                        case 3: wunsch = new WunschDrei(); break;
+
+                        case 4: wunsch = new WunschVier(); break;
+
+                        case 5: wunsch = new WunschFuenf(); break;
+
+                        case 6: wunsch = new WunschSechs(); break;
+
+                        default: Console.WriteLine($"Wunsch konnte für Schüler {schueler.Vorname} {schueler.Nachname} nicht erstellt werden"); break;
+                        
+                    }
                     if (!string.IsNullOrWhiteSpace(unternehmenId))
                     {
                         if (!int.TryParse(unternehmenId, out var unternehmendIdAsInt))
                         {
                             throw new ArgumentException($"Die Id des Unternehmen konnte nicht in eine gültige Zahl umgewandelt werden. Fehler in Zeile {actualExcelLine}");
                         }
-                        wuensche.Add(new Wunsch { VeranstaltungsId = unternehmendIdAsInt, Prioritaet = prio });
+                        wunsch.Prioritaet = prio;
+                        wunsch.VeranstaltungsId = unternehmendIdAsInt;
+                        wuensche.Add(wunsch);
                     }
                 }
                 schueler.Wuensche = wuensche;

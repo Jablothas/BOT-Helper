@@ -6,5 +6,6 @@
         public string Nachname { get; set; }
         public List<Wunsch> Wuensche { get; set; }
         public string Klasse { get; set; }
+        public string SummeGewichtung { get; set; }
     }
 }

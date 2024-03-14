@@ -13,6 +13,7 @@ namespace running_bunny.RaumZeitPlan
         public Zeitslot Zeitslot { get; set; }
         public Veranstaltung Veranstaltung { get; set; }
         public Raum Raum { get; set; }
+        public List<Schueler> SchuelerListe { get; set; } = new List<Schueler>();
 
         public ZelleRaumZeitplan(Zeitslot zeitslot, Veranstaltung veranstaltung, Raum raum)
         {
