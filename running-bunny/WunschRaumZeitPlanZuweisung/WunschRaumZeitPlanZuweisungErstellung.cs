@@ -6,11 +6,6 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
 {
     public class WunschRaumZeitPlanZuweisungErstellung
     {
-        //Zuweisung anhand Erfüllungsscore
-        //Prüfung in jeder Zuweisungsrunde. Schüler mit kleinen Scores -> Wunscherfüllung
-        //Bei erfolgreicher Zuweisung -> Schüler erhält Punkte
-        //Zuweisung immer "Wunsch.zelle = ZelleRaumZeitPlan". Dadurch Informationen für Wunsch zu Zeitslot und Veranstaltung
-
         public List<Schueler> SchuelerListe { get; set; }
         public List<ZelleRaumZeitplan> ZelleRaumZeitplanListe { get; set; }
 
@@ -25,6 +20,12 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
             Debug.WriteLine("////////////////////////");
             Debug.WriteLine("Zuweisung Wunsch zu Zelle");
 
+            SchülerNachWünschenKursenZuweisen();
+            WeiseAlleSchülerMitFreienZeitslotsVeranstaltungenZu();
+        }
+
+        private void SchülerNachWünschenKursenZuweisen()
+        {
             for (int wunschPrio = 1; wunschPrio <= 6; wunschPrio++)
             {
                 //Schülerliste sortiert nach Scores
@@ -50,7 +51,6 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                     }
                 }
             }
-            WeiseAlleSchülerMitFreienZeitslotsVeranstaltungenZu();
         }
 
         private void WeiseAlleSchülerMitFreienZeitslotsVeranstaltungenZu()
@@ -62,7 +62,6 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
             var schuelerOhneBelegteZeitslots = SchuelerListe.Where(schueler => schueler.BelegteZeitslots.Count() != 5);
             foreach (var schueler in schuelerOhneBelegteZeitslots)
             {
-                var blub = freieZellen.Where(zelle => zelle.Zeitslot == Zeitslot.E);
                 var freieZellenNachZeitslot = freieZellen.ToLookup(zelle => zelle.Zeitslot, zelle => zelle);
 
                 var fehlendeZeitslots = alleZeitslots.Except(schueler.BelegteZeitslots.Select(slotZelle => slotZelle.Zeitslot));
@@ -88,7 +87,7 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
             }
         }
 
-        public ZelleRaumZeitplan SuchePassendeZelle(Wunsch wunsch, IEnumerable<Zeitslot> belegteZeitslots)
+        private ZelleRaumZeitplan SuchePassendeZelle(Wunsch wunsch, IEnumerable<Zeitslot> belegteZeitslots)
         {
             //Suchen von Kursen, mit selber VeranstaltungsId und noch nicht in belegtem Zeitslot
             var zellenFuerVeranstaltung = ZelleRaumZeitplanListe.Where(zelle => zelle.Veranstaltung.Id == wunsch.VeranstaltungsId && !belegteZeitslots.Contains(zelle.Zeitslot));
