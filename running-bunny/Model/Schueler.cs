@@ -9,12 +9,7 @@ namespace running_bunny.Model
         public List<Wunsch> Wuensche { get; set; }
         public string Klasse { get; set; }
         public int SummeGewichtung { get; set; }
-        public List<ZeitslotMitZelle> BelegteZeitslots { get; set; } = new List<ZeitslotMitZelle>();
+        public IDictionary<Zeitslot, ZelleRaumZeitplan> BelegteZeitslots { get; set; } = new Dictionary<Zeitslot, ZelleRaumZeitplan>();
     }
 
-    public class ZeitslotMitZelle
-    {
-        public Zeitslot Zeitslot { get; set; }
-        public ZelleRaumZeitplan Zelle { get; set; }
-    }
 }

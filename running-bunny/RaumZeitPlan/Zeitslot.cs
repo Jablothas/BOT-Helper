@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using running_bunny.Model;
-using running_bunny.Business;
-namespace running_bunny.RaumZeitPlan
+﻿namespace running_bunny.RaumZeitPlan
 {
     public enum Zeitslot
     {
