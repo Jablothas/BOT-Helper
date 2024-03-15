@@ -2,6 +2,7 @@
 using running_bunny.Model;
 using running_bunny.RaumZeitPlan;
 using running_bunny.WunschRaumZeitPlanZuweisung;
+using System.Diagnostics;
 namespace running_bunny.Business
 {
     public class Verarbeitung
@@ -52,8 +53,8 @@ namespace running_bunny.Business
                 //Eintragen der notwendigen Daten
                 var schueler = new Schueler();
                 schueler.Klasse = excel[zeile, 0];
-                schueler.Vorname = excel[zeile, 1];
-                schueler.Nachname = excel[zeile, 2];
+                schueler.Nachname = excel[zeile, 1];
+                schueler.Vorname = excel[zeile, 2];
 
                 if (string.IsNullOrWhiteSpace(schueler.Klasse)
                     || string.IsNullOrWhiteSpace(schueler.Vorname)
@@ -99,6 +100,12 @@ namespace running_bunny.Business
                 }
                 schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
+            }
+            Debug.WriteLine("////////////////////////////");
+            Debug.WriteLine("SCHÜLERLISTE");
+            foreach(Schueler schueler in schuelerListe)
+            {
+                Debug.WriteLine($"Vorname: {schueler.Vorname}     Nachname: {schueler.Nachname}");
             }
             return schuelerListe;
         }
