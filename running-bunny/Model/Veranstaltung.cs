@@ -18,6 +18,7 @@
         public int MaxAnzahlTeilnehmer { get; set; }
         public int MaxAnzahlVerantstaltungen { get; set; }
         public RaumZeitPlan.Zeitslot FruehsterZeitSlot { get; set; }
+        
 
         private int anzahlWünsche = 0;
         public int AnzahlWünsche 
