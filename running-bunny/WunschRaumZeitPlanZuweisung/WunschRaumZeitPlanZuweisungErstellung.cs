@@ -31,7 +31,6 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                 //Schülerliste sortiert nach Scores
                 var schuelerOrderedByScore = SchuelerListe.OrderBy(schueler => schueler.SummeGewichtung);
 
-                //Gleichmäßige Verteilung
                 foreach (var schueler in schuelerOrderedByScore)
                 {
                     var wunsch = schueler.Wuensche.SingleOrDefault(wunsch => wunsch.Prioritaet == wunschPrio);
@@ -39,16 +38,17 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                     {
                         var passendeZellen = SuchePassendeZellen(ZelleRaumZeitplan, wunsch, schueler.BelegteZeitslots.Select(slotZelle => slotZelle.Key));
                         if (passendeZellen != null)
-                        {                           
+                        {
                             WeiseZelleSchuelerWunschZu(wunschPrio, schueler, wunsch, passendeZellen.First());
                         }
                         else
                         {
                             var alteWuensche = schueler.Wuensche.Where(wunsch => wunsch.Zelle != null).OrderByDescending(wunsch => wunsch.Prioritaet);
                             var alleZeitslots = Enum.GetValues<Zeitslot>();
-                            passendeZellen = AlteWuenscheAendernGibPassendeZellenZurueck(wunsch, alteWuensche, ZelleRaumZeitplan, alleZeitslots, schueler);
-                            if(passendeZellen!= null)
-                            {                               
+
+                            var passendeZellenNachTauschen = AlteWuenscheAendernGibPassendeZellenZurueck(wunsch, alteWuensche, ZelleRaumZeitplan, new List<Zeitslot>(), schueler);
+                            if (passendeZellen != null)
+                            {
                                 //Erste passende Zelle eintragen
                                 WeiseZelleSchuelerWunschZu(wunschPrio, schueler, wunsch, passendeZellen.First());
                             }
@@ -83,19 +83,17 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                 var alterZeitslot = alterWunsch.Zelle.Zeitslot;
 
                 var unzulässigeZeitslots = new[] { alterZeitslot }.Concat(schueler.BelegteZeitslots.Select(e => e.Key)).Concat(probierteZeitslots).Distinct().ToList();
-                
-                //.Where(zeitslot => möglicheZeitslots.Contains(zeitslot)).ToList();
 
-                var passendeZellen = SuchePassendeZellen(zelleRaumZeitplan, alterWunsch, unzulässigeZeitslots);
+                var alternativeZellen = SuchePassendeZellen(zelleRaumZeitplan, alterWunsch, unzulässigeZeitslots);
 
                 //Probieren anderer Zellen für die vorherigen Wünsche in anderem Zeitslot. Wenn keine alternativen Zellen existieren, wird der nächste Wunsch durchprobiert
-                if (passendeZellen == null)
+                if (alternativeZellen == null)
                 {
                     return AlteWuenscheAendernGibPassendeZellenZurueck(neuerWunsch, alteWuensche.Except(new[] { alterWunsch }).OrderByDescending(wunsch => wunsch.Prioritaet), zelleRaumZeitplan, new List<Zeitslot>(), schueler);
                 }
 
                 //Wechseln der Zellen für den aktuellen Wunsch
-                foreach (var neueZelle in passendeZellen)
+                foreach (var neueZelle in alternativeZellen)
                 {
                     alterWunsch.Zelle.SchuelerListe.Remove(schueler);
                     alterWunsch.Zelle = neueZelle;
@@ -107,7 +105,7 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                     var passendeZellenNeuerWunsch = SuchePassendeZellen(zelleRaumZeitplan, neuerWunsch, schueler.BelegteZeitslots.Select(e => e.Key));
 
                     unzulässigeZeitslots.Add(neueZelle.Zeitslot);
-                    return passendeZellenNeuerWunsch ?? AlteWuenscheAendernGibPassendeZellenZurueck(neuerWunsch, alteWuensche.Except(new[] { alterWunsch }).OrderByDescending(wunsch => wunsch.Prioritaet), zelleRaumZeitplan, unzulässigeZeitslots, schueler);
+                    return passendeZellenNeuerWunsch ?? AlteWuenscheAendernGibPassendeZellenZurueck(neuerWunsch, alteWuensche, zelleRaumZeitplan, unzulässigeZeitslots, schueler);
                 }
             }
             return null;
@@ -147,7 +145,7 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
             }
         }
 
-        private static IEnumerable<ZelleRaumZeitplan>? SuchePassendeZellen(IEnumerable<ZelleRaumZeitplan> zeitplan, Wunsch wunsch, IEnumerable<Zeitslot> belegteZeitslots)
+        private static IOrderedEnumerable<ZelleRaumZeitplan>? SuchePassendeZellen(IEnumerable<ZelleRaumZeitplan> zeitplan, Wunsch wunsch, IEnumerable<Zeitslot> belegteZeitslots)
         {
             //Suchen von Kursen, mit selber VeranstaltungsId und noch nicht in belegtem Zeitslot
             var zellenFuerVeranstaltung = zeitplan.Where(zelle => zelle.Veranstaltung.Id == wunsch.VeranstaltungsId && !belegteZeitslots.Contains(zelle.Zeitslot));
@@ -164,7 +162,7 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
 
             if (möglicheZellen.Count() != 0)
             {
-                //Zelle mit geringster Teilnehmeranzahl suchen
+                //Zellen sortiert nach kleinster Teilnehmerzahl zurückgeben
                 return möglicheZellen.OrderBy(zelle => zelle.SchuelerListe.Count);
             }
 

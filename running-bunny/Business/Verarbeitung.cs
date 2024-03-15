@@ -20,12 +20,11 @@ namespace running_bunny.Business
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
 
-            //var wuenscheNachUnternehmen = ZeitplanErstellung.ZaehleWuenscheProVeranstaltung(schuelerListe, veranstaltungsListe);
-            //var unternehmenNachPrio = ZeitplanErstellung.ErstellungZeitplanBasierendAufWuenscheMitPrio(wuenscheNachUnternehmen, raumListe);
             RaumZeitPlanErstellung raumZeitPlanErstellung = new RaumZeitPlanErstellung(schuelerListe, veranstaltungsListe, raumListe);
 
             WunschRaumZeitPlanZuweisungErstellung wunschRaumZeitPlanZuweisungErstellung = new WunschRaumZeitPlanZuweisungErstellung
                                                                                                 (raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
+
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
             List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
@@ -190,15 +189,6 @@ namespace running_bunny.Business
             return raumListe;
         }
 
-        private void Algorithmus()
-        {
-
-            //Aufrufe von externen Klassen -> Zeitplanerstellung
-            //Zuordnung Raum-Schüler
-
-
-        }
-
         private static string[,] ReadExcel(string filepath)
         {
             //Annahme, dass die Datei existiert
@@ -237,21 +227,6 @@ namespace running_bunny.Business
                 }
             }
             return data;
-        }
-
-        private Excel.Workbook CreateSchuelerExcel()
-        {
-
-            return new Excel.Workbook();
-
-            //Option: Excel in Word konvertieren
-        }
-        private Excel.Workbook UnternehmenAnwesenheitsExcel()
-        {
-
-            return new Excel.Workbook();
-
-            //Option: Excel in Word konvertieren
         }
 
         private string GetSpaltenBuchstabe(int index)
