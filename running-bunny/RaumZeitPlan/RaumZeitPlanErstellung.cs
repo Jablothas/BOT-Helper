@@ -124,13 +124,14 @@ namespace running_bunny.RaumZeitPlan
 
         public void RaumZeitPlanZeilenweiseZuweisung()
         {
+            
             foreach(Raum raum in RaumListe)
             {
                 if(!raum.IstRaumVoll())
                 {
                     foreach (Veranstaltung ver in VeranstaltungsListe)
                     {
-                        if(ver.RaeumeBesetzt <= ver.AnzahlRaeume && !raum.IstRaumVoll())
+                        if(ver.RaeumeBesetzt < ver.AnzahlRaeume && !raum.IstRaumVoll())
                         {
                             int index = FindeFreieStelle(ver, raum);
                             if (index != -1)
@@ -155,7 +156,7 @@ namespace running_bunny.RaumZeitPlan
         private void DebugRaumZeitPlan(List<ZelleRaumZeitplan> raumZeitPlan)
         {
             int counter = 0;
-            //raumZeitPlan.Sort();
+           // raumZeitPlan.Sort();
             Debug.WriteLine("RAUMZEITPLANUNG");
             foreach(ZelleRaumZeitplan raumZeit in raumZeitPlan)
             {
@@ -186,7 +187,7 @@ namespace running_bunny.RaumZeitPlan
             }
             return index;
         }
-        private Raum SucheFreienRaum()
+        private void MischeRaumListe()
         {
             //mischt die Raumliste vorab
             if (istgemischt == false)
@@ -202,6 +203,10 @@ namespace running_bunny.RaumZeitPlan
                 }
                 istgemischt = true;
             }
+        }
+        private Raum SucheFreienRaum()
+        {
+            
 
             foreach(Raum raum in RaumListe)
             {
