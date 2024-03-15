@@ -27,7 +27,7 @@ namespace running_bunny.Business
             WunschRaumZeitPlanZuweisungErstellung wunschRaumZeitPlanZuweisungErstellung = new WunschRaumZeitPlanZuweisungErstellung
                                                                                                 (raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
-            List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplanListe;
+            List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
         }
 
@@ -64,29 +64,13 @@ namespace running_bunny.Business
                 }
 
                 var wuensche = new List<Wunsch>();
-                Wunsch wunsch = null;
                 //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
                 for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
                 {
+                    var wunsch = new Wunsch();
                     var prio = spalte - 2;
                     var unternehmenId = excel[zeile, spalte];
-                    switch (prio)
-                    {
-                        case 1: wunsch = new WunschEins(); break;
-
-                        case 2: wunsch = new WunschZwei(); break;
-
-                        case 3: wunsch = new WunschDrei(); break;
-
-                        case 4: wunsch = new WunschVier(); break;
-
-                        case 5: wunsch = new WunschFuenf(); break;
-
-                        case 6: wunsch = new WunschSechs(); break;
-
-                        default: Console.WriteLine($"Wunsch konnte für Schüler {schueler.Vorname} {schueler.Nachname} nicht erstellt werden"); break;
-                        
-                    }
+                    
                     if (!string.IsNullOrWhiteSpace(unternehmenId))
                     {
                         if (!int.TryParse(unternehmenId, out var unternehmendIdAsInt))
