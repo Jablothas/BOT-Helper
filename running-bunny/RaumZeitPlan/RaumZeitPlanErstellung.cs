@@ -124,7 +124,7 @@ namespace running_bunny.RaumZeitPlan
 
         public void RaumZeitPlanZeilenweiseZuweisung()
         {
-            
+            MischeRaumListe();
             foreach(Raum raum in RaumListe)
             {
                 if(!raum.IstRaumVoll())
