@@ -54,8 +54,8 @@ namespace running_bunny.RaumZeitPlan
                     //veranstaltung.AnzahlWünsche++; //wird setter aufgerufen?
                     
                 }
-                veranstaltung.BerechneBenoetigteRaeume();
-                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Räume " + veranstaltung.AnzahlRaeume + "\n");
+                veranstaltung.BerechneBenoetigteKurse();
+                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Kurse " + veranstaltung.AnzahlKurse + "\n");
             }
             Debug.WriteLine("///////////////////////////"); Debug.WriteLine("///////////////////////////");
         }
@@ -131,12 +131,12 @@ namespace running_bunny.RaumZeitPlan
                 {
                     foreach (Veranstaltung ver in VeranstaltungsListe)
                     {
-                        if(ver.RaeumeBesetzt < ver.AnzahlRaeume && !raum.IstRaumVoll())
+                        if(ver.RaeumeBesetzt < ver.AnzahlKurse && !raum.IstRaumVoll())
                         {
                             int index = FindeFreieStelle(ver, raum);
                             if (index != -1)
                             {
-                                for (int i = 0; i < ver.AnzahlRaeume; i++)
+                                for (int i = 0; i < ver.AnzahlKurse; i++)
                                 {
                                     ver.RaeumeBesetzt++;
                                     ZelleRaumZeitplan zelle = new ZelleRaumZeitplan((Zeitslot)(index + i + 1), ver, raum);
@@ -168,7 +168,7 @@ namespace running_bunny.RaumZeitPlan
 
         public int FindeFreieStelle(Veranstaltung ver, Raum raum)
         {
-            int benoetigteRaueme = ver.AnzahlRaeume;
+            int benoetigteRaueme = ver.AnzahlKurse;
             int index = -1; // -1 => keine freie Stelle gefunden
             for(int i = 0; i < raum.BelegteSlots.Length; i++)
             {

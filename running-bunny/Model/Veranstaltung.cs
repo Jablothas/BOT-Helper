@@ -33,21 +33,21 @@
                 
             }
         }
-        public int AnzahlRaeume { get; set; } = 0;
+        public int AnzahlKurse { get; set; } = 0;
         public int RaeumeBesetzt { get; set; }
 
-        public void BerechneBenoetigteRaeume()
+        public void BerechneBenoetigteKurse()
         {
             double tmp = AnzahlWünsche;
-            int tmpAnzahlRaeume = (int)(tmp / 20);
+            int tmpAnzahlKurse = (int)(tmp / 20);
 
-            if(tmpAnzahlRaeume <= MaxAnzahlVerantstaltungen)
-                AnzahlRaeume = tmpAnzahlRaeume;
+            if(tmpAnzahlKurse <= MaxAnzahlVerantstaltungen)
+                AnzahlKurse = tmpAnzahlKurse;
 
-            if (tmp % 20 >= 5)
-                tmpAnzahlRaeume++;
-            if (tmpAnzahlRaeume <= MaxAnzahlVerantstaltungen)
-                AnzahlRaeume = tmpAnzahlRaeume;
+            if (tmp % 20 > 0)
+                tmpAnzahlKurse++;
+            if (tmpAnzahlKurse <= MaxAnzahlVerantstaltungen)
+                AnzahlKurse = tmpAnzahlKurse;
         }
     }
 }
