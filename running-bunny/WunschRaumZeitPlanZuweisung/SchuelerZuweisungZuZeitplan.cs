@@ -4,17 +4,18 @@ using running_bunny.RaumZeitPlan;
 
 namespace running_bunny.WunschRaumZeitPlanZuweisung
 {
-    public class WunschRaumZeitPlanZuweisungErstellung
+    public class SchuelerZuweisungZuZeitplan
     {
         public List<Schueler> SchuelerListe { get; set; }
         public List<ZelleRaumZeitplan> ZelleRaumZeitplan { get; set; }
 
-        public WunschRaumZeitPlanZuweisungErstellung(List<Schueler> schuelerListe, List<ZelleRaumZeitplan> zellenListe)
+        public SchuelerZuweisungZuZeitplan(List<Schueler> schuelerListe, List<ZelleRaumZeitplan> zellenListe)
         {
             SchuelerListe = schuelerListe;
             ZelleRaumZeitplan = zellenListe;
             Erstellen();
         }
+
         public void Erstellen()
         {
             Debug.WriteLine("////////////////////////");

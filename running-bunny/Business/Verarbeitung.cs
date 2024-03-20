@@ -3,14 +3,13 @@ using running_bunny.Model;
 using running_bunny.RaumZeitPlan;
 using running_bunny.WunschRaumZeitPlanZuweisung;
 using System.Diagnostics;
+using running_bunny.WordErstellung;
 namespace running_bunny.Business
 {
     public class Verarbeitung
     {
         public void run(string schuelerFilePath, string veranstalterFilePath, string raumFilePath)
         {
-            //TODO: Methoden static machen? Was Vor- und Nachteile?
-
             var schuelerExcel = ReadExcel(schuelerFilePath);
             var schuelerListe = SchuelerErstellen(schuelerExcel);
 
@@ -22,12 +21,14 @@ namespace running_bunny.Business
 
             RaumZeitPlanErstellung raumZeitPlanErstellung = new RaumZeitPlanErstellung(schuelerListe, veranstaltungsListe, raumListe);
 
-            WunschRaumZeitPlanZuweisungErstellung wunschRaumZeitPlanZuweisungErstellung = new WunschRaumZeitPlanZuweisungErstellung
-                                                                                                (raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
+            SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung = 
+                new SchuelerZuweisungZuZeitplan(raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
 
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
             List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
+            var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
+            laufzettelErstellung.ErstelleWordDatei();
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
