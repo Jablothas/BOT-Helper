@@ -15,6 +15,9 @@ using Microsoft.VisualBasic.ApplicationServices;
 using Microsoft.Office.Interop.Word;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics.Metrics;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace running_bunny.RaumZeitPlan
 {
@@ -236,104 +239,113 @@ namespace running_bunny.RaumZeitPlan
 
         public void Erstellen()
         {
+            object filename = "RaumZeitplan"; //Hard coded
             Word.Application wordApp = new Word.Application();
-            wordApp.Visible = true;
-            // Neues Dokument erstellen
             Word.Document doc = wordApp.Documents.Add();
-            Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
-            Word.Paragraph paragraph = doc.Paragraphs.Add();
-           
-            
-
-            
-
-
-            
-           //Ueberschrift
-            string ueberschriftStil = "ueberschriftStil";
-            ErstelleUeberschriftStil(wordApp, ueberschriftStil);
-            paragraphUeberschrift.set_Style(ueberschriftStil);
-            String text = "Organisationsplan für den Berufsorientierungstag \n\n";
-            paragraphUeberschrift.Range.Text = text;
-
-
-            //Paragraph
-            string paragraphStil = "paragraphStil";
-            ErstelleParagraphStil(wordApp, paragraphStil);
-            paragraph.set_Style(paragraphStil);
-            String paragraphText = "8:30 bis 8:45 Uhr Begrüßung und Einführung in der Aula\n";
-            String paragraphText2 = "13:10 bis 13:20 Uhr Abschluss im Klassenverbund\n\n";
-            paragraph.Range.Text = paragraphText;
-            paragraph.Range.Text = paragraphText2;
-
-            // Tabelle erstellen
-            int numRows = VeranstaltungsListe.Count;
-            int numCols = Enum.GetNames(typeof(Zeitslot)).Length + 1;
-            Word.Table table = doc.Tables.Add(doc.Paragraphs[doc.Paragraphs.Count].Range, numRows, numCols);
-            table.AllowAutoFit = true;
-            table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitContent);
-
-
-            //Tabelle erste Zelle oben links = 1 x 1
-            //Erste Zeile in Tabelle
-            table.Cell(1, 1).Range.Text = "Veranstalter";
-            for(int i = 1; i <= Enum.GetNames(typeof(Zeitslot)).Length; i++)
+            try
             {
-                table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
-            }
+                wordApp.Visible = true;
+                // Neues Dokument erstellen
+                
+                Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
+                Word.Paragraph paragraph = doc.Paragraphs.Add();
+                doc.Content.Font.Name = "Arial";
 
-            string tabellenStil = "TabellenStil";
-            ErstelleTabellenStil(wordApp, tabellenStil);
-            table.set_Style(tabellenStil);
 
-            // Tabelle füllen
-            for (int row = 0; row < VeranstaltungsListe.Count; row++)
-            {
-                table.Cell(row + 1, 1).Range.Text = VeranstaltungsListe[row].UnternehmensName;
-                for (int col = 1; col <= Enum.GetNames(typeof(Zeitslot)).Length; col++)
+
+                //Ueberschrift
+                string ueberschriftStil = "ueberschriftStil";
+                ErstelleUeberschriftStil(wordApp, ueberschriftStil);
+                paragraphUeberschrift.set_Style(ueberschriftStil);
+                String text = "Organisationsplan für den Berufsorientierungstag \n\n";
+                paragraphUeberschrift.Range.Text = text;
+
+
+                //Paragraph
+                string paragraphStil = "paragraphStil";
+                ErstelleParagraphStil(wordApp, paragraphStil);
+                paragraph.set_Style(paragraphStil);
+                String paragraphText = "8:30 bis 8:45 Uhr Begrüßung und Einführung in der Aula\n";
+                String paragraphText2 = "13:10 bis 13:20 Uhr Abschluss im Klassenverbund\n\n";
+                paragraph.Range.Text = paragraphText;
+                paragraph.Range.Text = paragraphText2;
+
+                // Tabelle erstellen
+                int numRows = VeranstaltungsListe.Count;
+                int numCols = Enum.GetNames(typeof(Zeitslot)).Length + 1;
+                Word.Table table = doc.Tables.Add(doc.Paragraphs[doc.Paragraphs.Count].Range, numRows, numCols);
+                table.AllowAutoFit = true;
+
+                table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow);
+
+
+                //Tabelle erste Zelle oben links = 1 x 1
+                //Erste Zeile in Tabelle
+                table.Cell(1, 1).Range.Text = "Veranstalter";
+                for (int i = 1; i <= Enum.GetNames(typeof(Zeitslot)).Length; i++)
                 {
-                    // Zelle setzen
-                    ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Zeitslot == (Zeitslot)col && VeranstaltungsListe[row].Id == zelle.Veranstaltung.Id); //Sucht  zelle mit gleicher VeranstaltungsID und Zeitslot
-                    if(zelle != null)
-                        table.Cell(2 + row, 1 + col).Range.Text = zelle.Raum.Bezeichnung != null ? zelle.Raum.Bezeichnung : "";
+                    table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
                 }
-            }
 
-            // Speichern 
-            object filename = "RaumZeitplan.docx";
-            doc.SaveAs2(ref filename);
+                string tabellenStil = "TabellenStil";
+                ErstelleTabellenStil(wordApp, tabellenStil);
+                table.set_Style(tabellenStil);
+
+                // Tabelle füllen
+                for (int row = 0; row < VeranstaltungsListe.Count; row++)
+                {
+                    table.Cell(row + 2, 1).Range.Text = (row + 1).ToString() + ". " + VeranstaltungsListe[row].UnternehmensName;
+                    for (int col = 1; col <= Enum.GetNames(typeof(Zeitslot)).Length; col++)
+                    {
+                        // Zelle setzen
+                        ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Zeitslot == (Zeitslot)col && VeranstaltungsListe[row].Id == zelle.Veranstaltung.Id); //Sucht  zelle mit gleicher VeranstaltungsID und Zeitslot
+                        if (zelle != null)
+                        {
+                            table.Cell(2 + row, 1 + col).Range.Text = zelle.Raum.Bezeichnung != null ? zelle.Raum.Bezeichnung : "";
+                        }
+
+                    }
+                }
+                // Speichern 
+                doc.SaveAs2(ref filename);
+            }
+            catch(COMException e)
+            {
+
+                throw new Exception("Bitte alle Dokumente mit gleicher Bezeichnung schließen und das Programm neu starten");
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
             
 
         }
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
-            style.Font.Name = "Arial";
             style.Font.Size = 16;
             style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            style.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray10;
         }
         private void ErstelleTabellenStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeTable);
-            style.Font.Name = "Arial";
             style.Font.Size = 11;
             style.Font.Bold = 1;
             style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
             style.Table.Borders.Enable = 1;
             style.Table.Borders.InsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
             style.Table.Borders.OutsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
+            
            
         }
         private void ErstelleParagraphStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
-            style.Font.Name = "Arial";
             style.Font.Size = 11;
             style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
             
         }
-
-
-
     }
 }
