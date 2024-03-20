@@ -9,8 +9,12 @@ using System.Windows;
 using running_bunny.Model;
 using running_bunny.Business;
 using System.Reflection.Metadata.Ecma335;
-using Microsoft.Office.Interop.Word;
+using Word = Microsoft.Office.Interop.Word;
 using System.Security.Policy;
+using Microsoft.VisualBasic.ApplicationServices;
+using Microsoft.Office.Interop.Word;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace running_bunny.RaumZeitPlan
 {
@@ -37,14 +41,16 @@ namespace running_bunny.RaumZeitPlan
 
             WunschProVeranstaltung();
             RaumZeitPlanZeilenweiseZuweisung();
+            Erstellen();
+
         }
         private void WunschProVeranstaltung()
         {
             int counter = 0;
-            foreach(Veranstaltung veranstaltung in VeranstaltungsListe) //Durchsucht alle Veranstaltungen
+            foreach (Veranstaltung veranstaltung in VeranstaltungsListe) //Durchsucht alle Veranstaltungen
             {
                 counter++;
-                foreach(Schueler schueler in SchuelerListe) //Durchsucht alle Schüler
+                foreach (Schueler schueler in SchuelerListe) //Durchsucht alle Schüler
                 {
                     Wunsch wunsch = schueler.Wuensche.Find(swu => swu.VeranstaltungsId == veranstaltung.Id && swu.Prioritaet < 6); //Sucht ersten Wunsch mit gleicher VeranstaltungsID und einer Priorität < 6
                     if (wunsch != null) //Falls kein wunsch gefunden wurde, wird Wunsch übersprungen
@@ -52,7 +58,7 @@ namespace running_bunny.RaumZeitPlan
                         veranstaltung.AnzahlWünsche = veranstaltung.AnzahlWünsche + 1; //Erhöht die Anzahl der Wünsche in Veranstaltung um 1
                     }
                     //veranstaltung.AnzahlWünsche++; //wird setter aufgerufen?
-                    
+
                 }
 
                 veranstaltung.BerechneBenoetigteKurse();
@@ -72,7 +78,7 @@ namespace running_bunny.RaumZeitPlan
         //            foreach (Veranstaltung veranstaltung in VeranstaltungsListe)
         //            {
         //                Random random = new Random();
-                            
+
         //                if(zeitslot >= (int)veranstaltung.FruehsterZeitSlot)
         //                {
 
@@ -119,7 +125,7 @@ namespace running_bunny.RaumZeitPlan
         //            }
         //            RaumListe.ForEach(raum => raum.IstBelegt = false);
         //        }
-                
+
         //    }
         //    DebugRaumZeitPlan(RaumZeitplan);
         //}
@@ -127,14 +133,14 @@ namespace running_bunny.RaumZeitPlan
         public void RaumZeitPlanZeilenweiseZuweisung()
         {
             MischeRaumListe();
-            foreach(Raum raum in RaumListe) //Durchsucht Raum in Raumliste
+            foreach (Raum raum in RaumListe) //Durchsucht Raum in Raumliste
             {
-                if(!raum.IstRaumVoll()) //Fragt ab, ob Raum voll ist
+                if (!raum.IstRaumVoll()) //Fragt ab, ob Raum voll ist
                 {
                     foreach (Veranstaltung ver in VeranstaltungsListe) //Durchsucht Veranstaltungen in Veranstaltungsliste
                     {
 
-                        if(ver.RaeumeBesetzt < ver.AnzahlKurse && !raum.IstRaumVoll()) //Fragt ob, die Anzahl der reservierten Räume kleiner als die Anahl der benötigten Räumen in Veranstaltung sind
+                        if (ver.RaeumeBesetzt < ver.AnzahlKurse && !raum.IstRaumVoll()) //Fragt ob, die Anzahl der reservierten Räume kleiner als die Anahl der benötigten Räumen in Veranstaltung sind
                         {
                             int index = FindeFreieStelle(ver, raum); //Übergibt Veranstaltung und Raum um eine freie Stelle zu suchen
                             if (index != -1) //Bei -1 keine Stelle gefunden
@@ -149,7 +155,7 @@ namespace running_bunny.RaumZeitPlan
                                 }
                             }
                         }
-                       
+
                     }
                 }
             }
@@ -159,12 +165,12 @@ namespace running_bunny.RaumZeitPlan
         private void DebugRaumZeitPlan(List<ZelleRaumZeitplan> raumZeitPlan)
         {
             int counter = 0;
-           // raumZeitPlan.Sort();
+            // raumZeitPlan.Sort();
             Debug.WriteLine("RAUMZEITPLANUNG");
-            foreach(ZelleRaumZeitplan raumZeit in raumZeitPlan)
+            foreach (ZelleRaumZeitplan raumZeit in raumZeitPlan)
             {
                 counter++;
-                Debug.WriteLine($"{counter}."+"  UNTERNEHMEN:" + raumZeit.Veranstaltung.UnternehmensName +  "   VERANSTALTUNG: " + raumZeit.Veranstaltung.Fachrichtung + "  RAUM " + raumZeit.Raum.Bezeichnung + "  ZEITSLOT " + raumZeit.Zeitslot);
+                Debug.WriteLine($"{counter}." + "  UNTERNEHMEN:" + raumZeit.Veranstaltung.UnternehmensName + "   VERANSTALTUNG: " + raumZeit.Veranstaltung.Fachrichtung + "  RAUM " + raumZeit.Raum.Bezeichnung + "  ZEITSLOT " + raumZeit.Zeitslot);
             }
         }
 
@@ -175,7 +181,7 @@ namespace running_bunny.RaumZeitPlan
             int benoetigteRaueme = ver.AnzahlKurse;
 
             int index = -1; // -1 => keine freie Stelle gefunden
-            for(int i = 0; i < raum.BelegteSlots.Length; i++) //iteriert durch alle Slots
+            for (int i = 0; i < raum.BelegteSlots.Length; i++) //iteriert durch alle Slots
             {
                 for (int k = 0; k < benoetigteRaueme; k++) //iteriert durch benötigte Räume
                 {
@@ -211,22 +217,123 @@ namespace running_bunny.RaumZeitPlan
         }
         private Raum SucheFreienRaum()
         {
-            
 
-            foreach(Raum raum in RaumListe)
+
+            foreach (Raum raum in RaumListe)
             {
 
-                if(!raum.IstBelegt)
+                if (!raum.IstBelegt)
                 {
                     Raum freierRaum = raum;
                     freierRaum.IstBelegt = true;
                     return freierRaum;
                 }
-                
+
             }
             return null;
 
         }
-        
+
+        public void Erstellen()
+        {
+            Word.Application wordApp = new Word.Application();
+            wordApp.Visible = true;
+            // Neues Dokument erstellen
+            Word.Document doc = wordApp.Documents.Add();
+            Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
+            Word.Paragraph paragraph = doc.Paragraphs.Add();
+           
+            
+
+            
+
+
+            
+           //Ueberschrift
+            string ueberschriftStil = "ueberschriftStil";
+            ErstelleUeberschriftStil(wordApp, ueberschriftStil);
+            paragraphUeberschrift.set_Style(ueberschriftStil);
+            String text = "Organisationsplan für den Berufsorientierungstag \n\n";
+            paragraphUeberschrift.Range.Text = text;
+
+
+            //Paragraph
+            string paragraphStil = "paragraphStil";
+            ErstelleParagraphStil(wordApp, paragraphStil);
+            paragraph.set_Style(paragraphStil);
+            String paragraphText = "8:30 bis 8:45 Uhr Begrüßung und Einführung in der Aula\n";
+            String paragraphText2 = "13:10 bis 13:20 Uhr Abschluss im Klassenverbund\n\n";
+            paragraph.Range.Text = paragraphText;
+            paragraph.Range.Text = paragraphText2;
+
+            // Tabelle erstellen
+            int numRows = VeranstaltungsListe.Count;
+            int numCols = Enum.GetNames(typeof(Zeitslot)).Length + 1;
+            Word.Table table = doc.Tables.Add(doc.Paragraphs[doc.Paragraphs.Count].Range, numRows, numCols);
+            table.AllowAutoFit = true;
+            table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitContent);
+
+
+            //Tabelle erste Zelle oben links = 1 x 1
+            //Erste Zeile in Tabelle
+            table.Cell(1, 1).Range.Text = "Veranstalter";
+            for(int i = 1; i <= Enum.GetNames(typeof(Zeitslot)).Length; i++)
+            {
+                table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
+            }
+
+            string tabellenStil = "TabellenStil";
+            ErstelleTabellenStil(wordApp, tabellenStil);
+            table.set_Style(tabellenStil);
+
+            // Tabelle füllen
+            for (int row = 0; row < VeranstaltungsListe.Count; row++)
+            {
+                table.Cell(row + 1, 1).Range.Text = VeranstaltungsListe[row].UnternehmensName;
+                for (int col = 1; col <= Enum.GetNames(typeof(Zeitslot)).Length; col++)
+                {
+                    // Zelle setzen
+                    ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Zeitslot == (Zeitslot)col && VeranstaltungsListe[row].Id == zelle.Veranstaltung.Id); //Sucht  zelle mit gleicher VeranstaltungsID und Zeitslot
+                    if(zelle != null)
+                        table.Cell(2 + row, 1 + col).Range.Text = zelle.Raum.Bezeichnung != null ? zelle.Raum.Bezeichnung : "";
+                }
+            }
+
+            // Speichern 
+            object filename = "RaumZeitplan.docx";
+            doc.SaveAs2(ref filename);
+            
+
+        }
+        private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
+        {
+            Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
+            style.Font.Name = "Arial";
+            style.Font.Size = 16;
+            style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+        }
+        private void ErstelleTabellenStil(Word.Application wordApp, string styleName)
+        {
+            Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeTable);
+            style.Font.Name = "Arial";
+            style.Font.Size = 11;
+            style.Font.Bold = 1;
+            style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            style.Table.Borders.Enable = 1;
+            style.Table.Borders.InsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
+            style.Table.Borders.OutsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
+           
+        }
+        private void ErstelleParagraphStil(Word.Application wordApp, string styleName)
+        {
+            Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
+            style.Font.Name = "Arial";
+            style.Font.Size = 11;
+            style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            
+        }
+
+
+
     }
 }
