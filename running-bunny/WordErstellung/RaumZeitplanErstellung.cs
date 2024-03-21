@@ -70,7 +70,6 @@ namespace running_bunny.WordErstellung
                 {
                     table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
                     table.Cell(1, i + 1).Range.Text += LaufzettelErstellung._uhrzeitenZuZeitslot[((Zeitslot)i)];
-
                 }
 
                 string tabellenStil = "TabellenStil";
@@ -89,10 +88,8 @@ namespace running_bunny.WordErstellung
                         {
                             table.Cell(2 + row, 1 + col).Range.Text = zelle.Raum.Bezeichnung != null ? zelle.Raum.Bezeichnung : "";
                         }
-
                     }
                 }
-                
             }
             catch (COMException e)
             {
@@ -103,8 +100,6 @@ namespace running_bunny.WordErstellung
             {
                 throw new Exception(e.Message);
             }
-
-
         }
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
         {
@@ -133,7 +128,4 @@ namespace running_bunny.WordErstellung
 
         }
     }
-    
-   
-    
 }

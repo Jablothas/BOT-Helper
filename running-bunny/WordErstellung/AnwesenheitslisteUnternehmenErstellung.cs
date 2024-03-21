@@ -64,12 +64,6 @@ namespace running_bunny.WordErstellung
                 int numRows = 0;
                 int numCols = 4;
 
-                
-
-                //Word.Table table = doc.Tables.Add(doc.Paragraphs[doc.Paragraphs.Count].Range, numRows, numCols);
-                //table.AllowAutoFit = true;
-                //table.AutoFitBehavior(Word.WdAutoFitBehavior.wdAutoFitWindow);
-
 
                 foreach (Veranstaltung veranstaltung in VeranstaltungsListe)
                 {
@@ -116,8 +110,6 @@ namespace running_bunny.WordErstellung
                             {
                                 FügeEineZeileEinerTabelleHinzu(table, new string[] { schueler.Klasse, schueler.Nachname, schueler.Vorname });
                             }
-
-
                         }
                     }
                     doc.Words.Last.InsertBreak(WdBreakType.wdPageBreak);//Seitenumbruch
