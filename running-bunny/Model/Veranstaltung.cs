@@ -9,7 +9,7 @@
             UnternehmensName = unternehmensName;
             MaxAnzahlTeilnehmer = teilnehmer;
             MaxAnzahlVerantstaltungen = veranstaltungen;
-            FruehsterZeitSlot = Enum.TryParse<Zeitslot>(char.ToString(fruehsteZeit), out var zeitslot) ? zeitslot : Zeitslot.A;
+            FruehsterZeitSlot = Enum.TryParse<RaumZeitPlan.Zeitslot>(char.ToString(fruehsteZeit), out var zeitslot) ? zeitslot : RaumZeitPlan.Zeitslot.A;
         }
 
         public int Id { get; set; }
@@ -17,6 +17,37 @@
         public string Fachrichtung { get; set; }
         public int MaxAnzahlTeilnehmer { get; set; }
         public int MaxAnzahlVerantstaltungen { get; set; }
-        public Zeitslot FruehsterZeitSlot { get; set; }
+        public RaumZeitPlan.Zeitslot FruehsterZeitSlot { get; set; }
+        
+
+        private int anzahlWünsche = 0;
+        public int AnzahlWünsche 
+        {
+            get
+            {
+                return anzahlWünsche;
+            }
+            set
+            {
+                anzahlWünsche = value;
+                
+            }
+        }
+        public int AnzahlKurse { get; set; } = 0;
+        public int RaeumeBesetzt { get; set; }
+
+        public void BerechneBenoetigteKurse()
+        {
+            double tmp = AnzahlWünsche;
+            int tmpAnzahlKurse = (int)(tmp / 20);
+
+            if(tmpAnzahlKurse <= MaxAnzahlVerantstaltungen)
+                AnzahlKurse = tmpAnzahlKurse;
+
+            if (tmp % 20 > 0)
+                tmpAnzahlKurse++;
+            if (tmpAnzahlKurse <= MaxAnzahlVerantstaltungen)
+                AnzahlKurse = tmpAnzahlKurse;
+        }
     }
 }

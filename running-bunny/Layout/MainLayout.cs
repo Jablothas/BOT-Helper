@@ -29,12 +29,11 @@ namespace running_bunny
                 MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
                 return;
             }
-            // temp for customer presentation
-            string filePath = "src.docx";
-            Process.Start(@"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", filePath);
-
-            //var verarbeitung = new Verarbeitung();
-            //verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
+            loadingAnimation.Visible = true;
+            var verarbeitung = new Verarbeitung();
+            verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
+            loadingAnimation.Visible = false;
+            MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
