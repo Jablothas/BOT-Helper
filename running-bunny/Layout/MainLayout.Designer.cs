@@ -35,6 +35,7 @@
             titleLabel = new Label();
             logoPictureBox = new PictureBox();
             contentPanel = new Panel();
+            processingInfo = new Label();
             labelWelcomeMsg = new Label();
             PanelUpload = new Panel();
             InitProcess = new Button();
@@ -44,7 +45,6 @@
             SelectRooms = new Button();
             SelectStudentReset = new Button();
             SelectStudent = new Button();
-            processingInfo = new Label();
             headerPnl.SuspendLayout();
             titleBackgroundPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)BtnClose).BeginInit();
@@ -121,6 +121,18 @@
             contentPanel.Name = "contentPanel";
             contentPanel.Size = new Size(507, 463);
             contentPanel.TabIndex = 1;
+            // 
+            // processingInfo
+            // 
+            processingInfo.AutoSize = true;
+            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            processingInfo.ForeColor = Color.LawnGreen;
+            processingInfo.Location = new Point(53, 413);
+            processingInfo.Name = "processingInfo";
+            processingInfo.Size = new Size(403, 21);
+            processingInfo.TabIndex = 7;
+            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
+            processingInfo.Visible = false;
             // 
             // labelWelcomeMsg
             // 
@@ -238,17 +250,6 @@
             SelectStudent.Text = "Wahlliste hochladen";
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;
-            // 
-            // processingInfo
-            // 
-            processingInfo.AutoSize = true;
-            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
-            processingInfo.ForeColor = Color.LawnGreen;
-            processingInfo.Location = new Point(53, 413);
-            processingInfo.Name = "processingInfo";
-            processingInfo.Size = new Size(403, 21);
-            processingInfo.TabIndex = 7;
-            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
             // 
             // MainLayout
             // 

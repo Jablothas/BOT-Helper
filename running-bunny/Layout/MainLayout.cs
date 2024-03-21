@@ -29,9 +29,11 @@ namespace running_bunny
                 MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
                 return;
             }
+            processingInfo.Visible = true;
             var verarbeitung = new Verarbeitung();
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
             MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
+            processingInfo.Visible = false;
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
