@@ -25,101 +25,107 @@ namespace running_bunny.WordErstellung
         //TODO: Alles in ein Try-Catch stopfen
         public void ErstelleWordDatei()
         {
-            var anzahlDokumente = Math.Ceiling((double)SchuelerListe.Count() / 3);
-
             //Word öffnen
             Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
 
             wordApp.Visible = true;
             wordApp.ShowAnimation = false;
 
-            //neues leeres Dokument erstellen
-            Document document = wordApp.Documents.Add();
-            SetMarginsOfWordDocument(document, 25);
-            SetStyle(document, 11, "Calibri");
-
-            var anzahlSchülerAufSeite = 0;
-            var übrigeSchüler = SchuelerListe.Count;
-            //Durch die Schüler iterieren
-            foreach (var schueler in SchuelerListe)
+            //Für jede Klasse ein eigenes Dokument
+            var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse);
+            
+            foreach (var klasse in schülerGroupedByClass)
             {
-                anzahlSchülerAufSeite++;
-                übrigeSchüler--;
-                Paragraph klasseUndNamePara = document.Content.Paragraphs.Add();
-                klasseUndNamePara.Range.Text = schueler.Klasse + Environment.NewLine
-                    + $"{schueler.Nachname}, {schueler.Vorname}";
-                document.Range().InsertParagraphAfter();
+                //neues leeres Dokument erstellen
+                Document document = wordApp.Documents.Add();
+                SetMarginsOfWordDocument(document, 25);
+                SetStyle(document, 11, "Arial");
 
-                //Zeitplan erstellen
-                var tabellePara = document.Content.Paragraphs.Add();
-                Table zeitplan = document.Tables.Add(tabellePara.Range, 6, 6);
-                zeitplan.Borders.Enable = 1;
-                zeitplan.AllowAutoFit = true;
-                SetAutoFitTable(zeitplan, wordApp);
+                var anzahlSchülerAufSeite = 0;
+                var übrigeSchüler = SchuelerListe.Count;
 
-                foreach (Row zeile in zeitplan.Rows)
+                var schülerNachNachnamenSortiert = klasse.OrderBy(schueler => schueler.Nachname);
+                //Durch die Schüler iterieren
+                foreach (var schueler in schülerNachNachnamenSortiert)
                 {
-                    //Header für erste Zeile schreiben
-                    if (zeile.Index == 1)
-                    {
-                        FillRow(zeile, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
-                        zeile.Range.Font.Bold = 1;
+                    anzahlSchülerAufSeite++;
+                    übrigeSchüler--;
+                    Paragraph klasseUndNamePara = document.Content.Paragraphs.Add();
+                    klasseUndNamePara.Range.Text = schueler.Klasse + Environment.NewLine
+                        + $"{schueler.Nachname}, {schueler.Vorname}";
+                    document.Range().InsertParagraphAfter();
 
-                        //TODO: Hier noch Font ändern maybe
-                        zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
-                        foreach (Cell headerZelle in zeile.Cells)
+                    //Zeitplan erstellen
+                    var tabellePara = document.Content.Paragraphs.Add();
+                    Table zeitplan = document.Tables.Add(tabellePara.Range, 6, 6);
+                    zeitplan.Borders.Enable = 1;
+                    zeitplan.AllowAutoFit = true;
+                    SetAutoFitTable(zeitplan, wordApp);
+
+                    foreach (Row zeile in zeitplan.Rows)
+                    {
+                        //Header für erste Zeile schreiben
+                        if (zeile.Index == 1)
                         {
-                            headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;          // Vertikale Ausrichtung
-                            headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;  // horizontale Ausrichtung
+                            FillRow(zeile, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
+                            zeile.Range.Font.Bold = 1;
+
+                            //TODO: Hier noch Font ändern maybe
+                            zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
+                            foreach (Cell headerZelle in zeile.Cells)
+                            {
+                                headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;          // Vertikale Ausrichtung
+                                headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;  // horizontale Ausrichtung
+                            }
                         }
-                    }
-                    else
-                    {
-                        //Hier sind die Indizes 2 bis 6
-                        var zelleRaumZeitPlanSchueler = schueler.BelegteZeitslots.Single(zelle => (int)zelle.Key == zeile.Index - 1);
-                        var zugehörigerWunsch =
-                            schueler.Wuensche.FirstOrDefault(wunsch => wunsch.VeranstaltungsId == zelleRaumZeitPlanSchueler.Value.Veranstaltung.Id);
-
-                        FillRow(zeile,
-                            zelleRaumZeitPlanSchueler.Key.ToString(),
-                            _uhrzeitenZuZeitslot[zelleRaumZeitPlanSchueler.Key],
-                            zelleRaumZeitPlanSchueler.Value.Raum.Bezeichnung,
-                            zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
-                            zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
-                            zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
-                        /*
-                        // Font für einzelnen Kursenzeile ändern
-                        // alle Spalten bzw. Zellen werden vertikal zentriert
-                        foreach (Cell kursZelle in zeile.Cells)
+                        else
                         {
-                            kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;            // Vertikale Ausrichtung
+                            //Hier sind die Indizes 2 bis 6
+                            var zelleRaumZeitPlanSchueler = schueler.BelegteZeitslots.Single(zelle => (int)zelle.Key == zeile.Index - 1);
+                            var zugehörigerWunsch =
+                                schueler.Wuensche.FirstOrDefault(wunsch => wunsch.VeranstaltungsId == zelleRaumZeitPlanSchueler.Value.Veranstaltung.Id);
+
+                            FillRow(zeile,
+                                zelleRaumZeitPlanSchueler.Key.ToString(),
+                                _uhrzeitenZuZeitslot[zelleRaumZeitPlanSchueler.Key],
+                                zelleRaumZeitPlanSchueler.Value.Raum.Bezeichnung,
+                                zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
+                                zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
+                                zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
+                            /*
+                            // Font für einzelnen Kursenzeile ändern
+                            // alle Spalten bzw. Zellen werden vertikal zentriert
+                            foreach (Cell kursZelle in zeile.Cells)
+                            {
+                                kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;            // Vertikale Ausrichtung
+                                // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
+                                if (spalte.Index == 0 || 1 || 2)
+                                {
+
+                                }
+                                if (zeitplan.Columns. == )
+                            }
                             // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
                             if (spalte.Index == 0 || 1 || 2)
                             {
 
                             }
-                            if (zeitplan.Columns. == )
+                                foreach (Cell kursZelle in zeile.Cells)
+                            {
+                                kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                                kursZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                            }
+                            */
                         }
-                        // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
-                        if (spalte.Index == 0 || 1 || 2)
-                        {
-
-                        }
-                            foreach (Cell kursZelle in zeile.Cells)
-                        {
-                            kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                            kursZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        }
-                        */
                     }
-                }
 
-                document.Content.InsertParagraphAfter();
-                if (anzahlSchülerAufSeite == 3 && übrigeSchüler != 0)
-                {
-                    //neue Seite
-                    document.Words.Last.InsertBreak(WdBreakType.wdPageBreak);
-                    anzahlSchülerAufSeite = 0;
+                    document.Content.InsertParagraphAfter();
+                    if (anzahlSchülerAufSeite == 3 && übrigeSchüler != 0)
+                    {
+                        //neue Seite
+                        document.Words.Last.InsertBreak(WdBreakType.wdPageBreak);
+                        anzahlSchülerAufSeite = 0;
+                    }
                 }
             }
             //TODO: Pfad anpassen oder gar nicht speichern?

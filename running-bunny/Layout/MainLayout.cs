@@ -26,20 +26,14 @@ namespace running_bunny
         {
             if (FilePaths.Count != 3)
             {
-                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
+                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.", "Halt!");
                 return;
             }
-
+            processingInfo.Visible = true;
             var verarbeitung = new Verarbeitung();
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
-
-            // temp for customer presentation
-            //string filePath = "src.docx";
-
-            //Process.Start(@"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", filePath); 
-            
-
-           
+            MessageBox.Show("Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nun schließen.", "Erfolg!");
+            processingInfo.Visible = false;
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
@@ -91,7 +85,7 @@ namespace running_bunny
             SelectStudent.Enabled = true;
             SelectStudent.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectStudent));
-            SelectStudent.Text = "Schülerliste hochladen";
+            SelectStudent.Text = "Wahlliste hochladen";
         }
 
         private void SelectRooms_Click(object sender, EventArgs e)
@@ -119,7 +113,7 @@ namespace running_bunny
             SelectCompanies.Enabled = true;
             SelectCompanies.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectCompanies));
-            SelectCompanies.Text = "Unternehmensliste hochladen";
+            SelectCompanies.Text = "Veranstalterliste hochladen";
         }
     }
 }

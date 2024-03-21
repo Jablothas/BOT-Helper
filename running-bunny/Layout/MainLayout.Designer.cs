@@ -28,12 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainLayout));
             headerPnl = new Panel();
             titleBackgroundPanel = new Panel();
             BtnClose = new PictureBox();
             titleLabel = new Label();
             logoPictureBox = new PictureBox();
             contentPanel = new Panel();
+            bottomBorder = new Panel();
+            leftBorder = new Panel();
+            processingInfo = new Label();
+            labelWelcomeMsg = new Label();
             PanelUpload = new Panel();
             InitProcess = new Button();
             SelectCompaniesReset = new Button();
@@ -42,6 +47,7 @@
             SelectRooms = new Button();
             SelectStudentReset = new Button();
             SelectStudent = new Button();
+            panel1 = new Panel();
             headerPnl.SuspendLayout();
             titleBackgroundPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)BtnClose).BeginInit();
@@ -58,26 +64,28 @@
             headerPnl.Dock = DockStyle.Top;
             headerPnl.Location = new Point(0, 0);
             headerPnl.Name = "headerPnl";
-            headerPnl.Size = new Size(497, 52);
+            headerPnl.Size = new Size(507, 52);
             headerPnl.TabIndex = 0;
             // 
             // titleBackgroundPanel
             // 
+            titleBackgroundPanel.BackColor = Color.Black;
             titleBackgroundPanel.Controls.Add(BtnClose);
             titleBackgroundPanel.Controls.Add(titleLabel);
             titleBackgroundPanel.Dock = DockStyle.Fill;
             titleBackgroundPanel.Location = new Point(53, 0);
             titleBackgroundPanel.Name = "titleBackgroundPanel";
-            titleBackgroundPanel.Size = new Size(444, 52);
+            titleBackgroundPanel.Size = new Size(454, 52);
             titleBackgroundPanel.TabIndex = 1;
             titleBackgroundPanel.MouseMove += titleBackgroundPanel_MouseMove;
             // 
             // BtnClose
             // 
             BtnClose.Image = Properties.Resources.closeapp2;
-            BtnClose.Location = new Point(390, 0);
+            BtnClose.Location = new Point(416, 12);
             BtnClose.Name = "BtnClose";
-            BtnClose.Size = new Size(48, 50);
+            BtnClose.Size = new Size(26, 30);
+            BtnClose.SizeMode = PictureBoxSizeMode.CenterImage;
             BtnClose.TabIndex = 4;
             BtnClose.TabStop = false;
             BtnClose.Click += BtnClose_Click;
@@ -85,32 +93,79 @@
             // titleLabel
             // 
             titleLabel.AutoSize = true;
-            titleLabel.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            titleLabel.Font = new Font("Segoe UI Semibold", 15.75F, FontStyle.Bold, GraphicsUnit.Point);
             titleLabel.ForeColor = Color.White;
-            titleLabel.Location = new Point(3, 8);
+            titleLabel.Location = new Point(6, 10);
             titleLabel.Name = "titleLabel";
-            titleLabel.Size = new Size(192, 32);
+            titleLabel.Size = new Size(266, 30);
             titleLabel.TabIndex = 0;
-            titleLabel.Text = "Running Bunny";
+            titleLabel.Text = "BOT-Helper (BWV Aachen)";
             // 
             // logoPictureBox
             // 
+            logoPictureBox.BackColor = Color.Black;
             logoPictureBox.Dock = DockStyle.Left;
-            logoPictureBox.Image = Properties.Resources.running_bunny;
+            logoPictureBox.Image = Properties.Resources.icons8_chatbot_30;
             logoPictureBox.Location = new Point(0, 0);
             logoPictureBox.Name = "logoPictureBox";
             logoPictureBox.Size = new Size(53, 52);
+            logoPictureBox.SizeMode = PictureBoxSizeMode.CenterImage;
             logoPictureBox.TabIndex = 0;
             logoPictureBox.TabStop = false;
             // 
             // contentPanel
             // 
+            contentPanel.BackColor = SystemColors.Control;
+            contentPanel.Controls.Add(panel1);
+            contentPanel.Controls.Add(bottomBorder);
+            contentPanel.Controls.Add(leftBorder);
+            contentPanel.Controls.Add(processingInfo);
+            contentPanel.Controls.Add(labelWelcomeMsg);
             contentPanel.Controls.Add(PanelUpload);
             contentPanel.Dock = DockStyle.Fill;
             contentPanel.Location = new Point(0, 52);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(497, 287);
+            contentPanel.Size = new Size(507, 463);
             contentPanel.TabIndex = 1;
+            // 
+            // bottomBorder
+            // 
+            bottomBorder.BackColor = Color.Black;
+            bottomBorder.Dock = DockStyle.Bottom;
+            bottomBorder.Location = new Point(0, 458);
+            bottomBorder.Name = "bottomBorder";
+            bottomBorder.Size = new Size(506, 5);
+            bottomBorder.TabIndex = 9;
+            // 
+            // leftBorder
+            // 
+            leftBorder.BackColor = Color.Black;
+            leftBorder.Dock = DockStyle.Right;
+            leftBorder.Location = new Point(506, 0);
+            leftBorder.Name = "leftBorder";
+            leftBorder.Size = new Size(1, 463);
+            leftBorder.TabIndex = 8;
+            // 
+            // processingInfo
+            // 
+            processingInfo.AutoSize = true;
+            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            processingInfo.ForeColor = Color.FromArgb(255, 128, 0);
+            processingInfo.Location = new Point(53, 413);
+            processingInfo.Name = "processingInfo";
+            processingInfo.Size = new Size(403, 21);
+            processingInfo.TabIndex = 7;
+            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
+            processingInfo.Visible = false;
+            // 
+            // labelWelcomeMsg
+            // 
+            labelWelcomeMsg.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            labelWelcomeMsg.Location = new Point(28, 11);
+            labelWelcomeMsg.Name = "labelWelcomeMsg";
+            labelWelcomeMsg.Size = new Size(457, 134);
+            labelWelcomeMsg.TabIndex = 6;
+            labelWelcomeMsg.Text = resources.GetString("labelWelcomeMsg.Text");
             // 
             // PanelUpload
             // 
@@ -121,22 +176,21 @@
             PanelUpload.Controls.Add(SelectRooms);
             PanelUpload.Controls.Add(SelectStudentReset);
             PanelUpload.Controls.Add(SelectStudent);
-            PanelUpload.Location = new Point(12, 6);
+            PanelUpload.Location = new Point(12, 148);
             PanelUpload.Name = "PanelUpload";
-            PanelUpload.Size = new Size(479, 274);
+            PanelUpload.Size = new Size(479, 241);
             PanelUpload.TabIndex = 5;
             // 
             // InitProcess
             // 
             InitProcess.BackColor = Color.Silver;
             InitProcess.FlatStyle = FlatStyle.Flat;
-            InitProcess.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            InitProcess.Location = new Point(264, 208);
+            InitProcess.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            InitProcess.Location = new Point(12, 180);
             InitProcess.Name = "InitProcess";
-            InitProcess.Size = new Size(204, 50);
-            InitProcess.TabIndex = 10;
+            InitProcess.Size = new Size(456, 50);
+            InitProcess.TabIndex = 4;
             InitProcess.Text = "Verarbeitung starten";
-            InitProcess.TextAlign = ContentAlignment.MiddleLeft;
             InitProcess.UseVisualStyleBackColor = false;
             InitProcess.Click += InitProcess_Click;
             // 
@@ -158,13 +212,12 @@
             // 
             SelectCompanies.BackColor = Color.Silver;
             SelectCompanies.FlatStyle = FlatStyle.Flat;
-            SelectCompanies.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            SelectCompanies.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
             SelectCompanies.Location = new Point(12, 68);
             SelectCompanies.Name = "SelectCompanies";
-            SelectCompanies.Size = new Size(400, 50);
-            SelectCompanies.TabIndex = 8;
+            SelectCompanies.Size = new Size(456, 50);
+            SelectCompanies.TabIndex = 1;
             SelectCompanies.Text = "Veranstalterliste hochladen";
-            SelectCompanies.TextAlign = ContentAlignment.MiddleLeft;
             SelectCompanies.UseVisualStyleBackColor = false;
             SelectCompanies.Click += SelectCompanies_Click;
             // 
@@ -186,13 +239,12 @@
             // 
             SelectRooms.BackColor = Color.Silver;
             SelectRooms.FlatStyle = FlatStyle.Flat;
-            SelectRooms.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            SelectRooms.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
             SelectRooms.Location = new Point(12, 124);
             SelectRooms.Name = "SelectRooms";
-            SelectRooms.Size = new Size(400, 50);
-            SelectRooms.TabIndex = 6;
+            SelectRooms.Size = new Size(456, 50);
+            SelectRooms.TabIndex = 3;
             SelectRooms.Text = "Raumliste hochladen";
-            SelectRooms.TextAlign = ContentAlignment.MiddleLeft;
             SelectRooms.UseVisualStyleBackColor = false;
             SelectRooms.Click += SelectRooms_Click;
             // 
@@ -214,21 +266,29 @@
             // 
             SelectStudent.BackColor = Color.Silver;
             SelectStudent.FlatStyle = FlatStyle.Flat;
-            SelectStudent.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            SelectStudent.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
             SelectStudent.Location = new Point(12, 12);
             SelectStudent.Name = "SelectStudent";
-            SelectStudent.Size = new Size(400, 50);
-            SelectStudent.TabIndex = 4;
+            SelectStudent.Size = new Size(456, 50);
+            SelectStudent.TabIndex = 0;
             SelectStudent.Text = "Wahlliste hochladen";
-            SelectStudent.TextAlign = ContentAlignment.MiddleLeft;
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Black;
+            panel1.Dock = DockStyle.Left;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1, 458);
+            panel1.TabIndex = 10;
             // 
             // MainLayout
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(497, 339);
+            ClientSize = new Size(507, 515);
             Controls.Add(contentPanel);
             Controls.Add(headerPnl);
             FormBorderStyle = FormBorderStyle.None;
@@ -240,6 +300,7 @@
             ((System.ComponentModel.ISupportInitialize)BtnClose).EndInit();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
             contentPanel.ResumeLayout(false);
+            contentPanel.PerformLayout();
             PanelUpload.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -260,5 +321,10 @@
         private Button SelectCompaniesReset;
         private Button SelectCompanies;
         private Button InitProcess;
+        private Label labelWelcomeMsg;
+        private Label processingInfo;
+        private Panel bottomBorder;
+        private Panel leftBorder;
+        private Panel panel1;
     }
 }
