@@ -92,8 +92,7 @@ namespace running_bunny.WordErstellung
 
                     }
                 }
-                // Speichern 
-                doc.SaveAs2(ref filename);
+                
             }
             catch (COMException e)
             {

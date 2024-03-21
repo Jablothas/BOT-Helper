@@ -79,7 +79,7 @@ namespace running_bunny.WordErstellung
                     {
                         Word.Paragraph paragraphFirmennamen = doc.Paragraphs.Add();
                         paragraphFirmennamen.set_Style("firmennamenStil");
-                        firmennamenText = veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + "\n\n";
+                        firmennamenText = "\n" + veranstaltung.UnternehmensName + " - " + veranstaltung.Fachrichtung + "\n\n";
                         paragraphFirmennamen.Range.Text = firmennamenText;
                         
 
@@ -95,7 +95,7 @@ namespace running_bunny.WordErstellung
                             //Slot Uhrzeit Print
                             Word.Paragraph paragraphUhrzeit = doc.Paragraphs.Add();
                             paragraphUhrzeit.set_Style("uhrzeitStil");
-                            uhrzeitText = LaufzettelErstellung._uhrzeitenZuZeitslot[slot] + "\n";
+                            uhrzeitText = "\n" + LaufzettelErstellung._uhrzeitenZuZeitslot[slot] + "\n";
                             paragraphUhrzeit.Range.Text = uhrzeitText;
                             
 
@@ -125,7 +125,7 @@ namespace running_bunny.WordErstellung
             }
             catch (Exception e)
             {
-
+                throw new Exception(e.Message);
             }
         }
 

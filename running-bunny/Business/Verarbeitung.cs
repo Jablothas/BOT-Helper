@@ -27,11 +27,11 @@ namespace running_bunny.Business
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
             List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
-            RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
-            raumzeitplanWord.ErstelleWordDatei();
+            //RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
+            //raumzeitplanWord.ErstelleWordDatei();
 
-            var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
-            laufzettelErstellung.ErstelleWordDatei();
+            //var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
+            //laufzettelErstellung.ErstelleWordDatei();
 
             AnwesenheitslisteUnternehmenErstellung anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
             anwesenheitsliste.ErstelleWordDatei();
