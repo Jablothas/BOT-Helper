@@ -1,14 +1,7 @@
-﻿using Microsoft.Office.Interop.Word;
-using running_bunny.RaumZeitPlan;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using running_bunny.RaumZeitPlan;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using running_bunny.Model;
 using Word = Microsoft.Office.Interop.Word;
-using running_bunny.RaumZeitPlan;
 
 namespace running_bunny.WordErstellung
 {
@@ -16,15 +9,20 @@ namespace running_bunny.WordErstellung
     {
         public List<Veranstaltung> VeranstaltungsListe { get; set; }
         public List<ZelleRaumZeitplan> RaumZeitplanListe { get; set; } = new List<ZelleRaumZeitplan>();
-        public RaumZeitplanErstellung(List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe)
+        private string wordFilesPath { get; set; }
+        private Word.Application wordApp { get; set; }
+
+        public RaumZeitplanErstellung(Word.Application wordApp, List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe, string wordFilesPath)
         {
             VeranstaltungsListe = veranstalungsListe;
             RaumZeitplanListe = raumZeitplanListe;
+            this.wordFilesPath = wordFilesPath;
+            this.wordApp = wordApp;
         }
+
         public void ErstelleWordDatei()
         {
-            object filename = "RaumZeitplan"; //Hard coded
-            Word.Application wordApp = new Word.Application();
+            string filename = "RaumZeitplan"; //Hard coded
             Word.Document doc = wordApp.Documents.Add();
             try
             {
@@ -34,8 +32,6 @@ namespace running_bunny.WordErstellung
                 Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
                 Word.Paragraph paragraph = doc.Paragraphs.Add();
                 doc.Content.Font.Name = "Arial";
-
-
 
                 //Ueberschrift
                 string ueberschriftStil = "ueberschriftStil";
@@ -100,7 +96,10 @@ namespace running_bunny.WordErstellung
             {
                 throw new Exception(e.Message);
             }
+            doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
+            doc.Close();
         }
+
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);

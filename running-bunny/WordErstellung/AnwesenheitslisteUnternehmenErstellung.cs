@@ -1,14 +1,7 @@
 ﻿using Microsoft.Office.Interop.Word;
 using running_bunny.Model;
 using running_bunny.RaumZeitPlan;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Word = Microsoft.Office.Interop.Word;
-using System.Threading.Tasks;
-using System.Reflection.Metadata;
-using System.Xml.Linq;
 
 namespace running_bunny.WordErstellung
 {
@@ -16,17 +9,20 @@ namespace running_bunny.WordErstellung
     {
         public List<Veranstaltung> VeranstaltungsListe { get; set; }
         public List<ZelleRaumZeitplan> RaumZeitplanListe { get; set; } = new List<ZelleRaumZeitplan>();
+        private string wordFilesPath { get; set; }
+        private Word.Application wordApp { get; set; }
 
-        public AnwesenheitslisteUnternehmenErstellung(List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe)
+        public AnwesenheitslisteUnternehmenErstellung(Word.Application wordApp, List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe, string wordFilesPath)
         {
             VeranstaltungsListe = veranstalungsListe;
             RaumZeitplanListe = raumZeitplanListe;
+            this.wordFilesPath = wordFilesPath;
+            this.wordApp = wordApp;
         }
 
         public void ErstelleWordDatei()
         {
-            object filename = "Anwesendheitslisten"; //Hard coded
-            Word.Application wordApp = new Word.Application();
+            object filename = "Anwesenheitslisten"; //Hard coded
             Word.Document doc = wordApp.Documents.Add();
             try
             {
@@ -119,6 +115,8 @@ namespace running_bunny.WordErstellung
             {
                 throw new Exception(e.Message);
             }
+            doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
+            doc.Close();
         }
 
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)

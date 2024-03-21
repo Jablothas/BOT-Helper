@@ -4,6 +4,7 @@ using running_bunny.RaumZeitPlan;
 using running_bunny.WunschRaumZeitPlanZuweisung;
 using System.Diagnostics;
 using running_bunny.WordErstellung;
+using Word = Microsoft.Office.Interop.Word;
 namespace running_bunny.Business
 {
     public class Verarbeitung
@@ -21,20 +22,36 @@ namespace running_bunny.Business
 
             RaumZeitplan raumZeitPlan = new RaumZeitplan(schuelerListe, veranstaltungsListe, raumListe);
 
-            SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung = 
+            SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung =
                 new SchuelerZuweisungZuZeitplan(raumZeitPlan.SchuelerListe, raumZeitPlan.RaumZeitplanListe);
 
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
-            List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
-            RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
+            //Werden im Bin-Verzeichnis erstellt, wenn Dateien bereits vorhanden, werden diese überschrieben
+            CreateWordFiles(veranstaltungsListe, raumZeitPlan, schuelerListeFuerLaufzettel);
+        }
+
+        private static void CreateWordFiles(List<Veranstaltung> veranstaltungsListe, RaumZeitplan raumZeitPlan, List<Schueler> schuelerListeFuerLaufzettel)
+        {
+            //Erstellung Word-Dateien-Verzeichnis in bin und temporär Speichern der erzeugten Dateien
+            //Bin-Verzeichnis holen
+            var workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var wordFilesDir = Directory.CreateDirectory(@$"{workingDir}\Wordfiles");
+
+            Word.Application wordApp = new Word.Application();
+
+            RaumZeitplanErstellung raumzeitplanWord =
+                new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
             raumzeitplanWord.ErstelleWordDatei();
 
-            var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
+            var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
             laufzettelErstellung.ErstelleWordDatei();
 
-            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
+            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
+                = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
             anwesenheitsliste.ErstelleWordDatei();
+
+            wordApp.Quit();
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -76,7 +93,7 @@ namespace running_bunny.Business
                     var wunsch = new Wunsch();
                     var prio = spalte - 2;
                     var unternehmenId = excel[zeile, spalte];
-                    
+
                     if (!string.IsNullOrWhiteSpace(unternehmenId))
                     {
                         if (!int.TryParse(unternehmenId, out var unternehmendIdAsInt))
@@ -93,7 +110,7 @@ namespace running_bunny.Business
             }
             Debug.WriteLine("////////////////////////////");
             Debug.WriteLine("SCHÜLERLISTE");
-            foreach(Schueler schueler in schuelerListe)
+            foreach (Schueler schueler in schuelerListe)
             {
                 Debug.WriteLine($"Vorname: {schueler.Vorname}     Nachname: {schueler.Nachname}");
             }

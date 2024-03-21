@@ -1,16 +1,20 @@
 ﻿using running_bunny.Model;
 using Microsoft.Office.Interop.Word;
 using running_bunny.RaumZeitPlan;
-using static System.Windows.Forms.AxHost;
 
 namespace running_bunny.WordErstellung
 {
     public class LaufzettelErstellung
     {
         private List<Schueler> SchuelerListe { get; set; }
-        public LaufzettelErstellung(IEnumerable<Schueler> schueler)
+        private string wordFilesPath { get; set; }
+        private Microsoft.Office.Interop.Word.Application wordApp { get; set; }
+
+        public LaufzettelErstellung(Microsoft.Office.Interop.Word.Application wordApp, IEnumerable<Schueler> schueler, string wordFilesPath)
         {
             SchuelerListe = schueler.ToList();
+            this.wordFilesPath = wordFilesPath;
+            this.wordApp = wordApp;
         }
 
         public static Dictionary<Zeitslot, string> _uhrzeitenZuZeitslot = new Dictionary<Zeitslot, string>()
@@ -25,24 +29,26 @@ namespace running_bunny.WordErstellung
         //TODO: Alles in ein Try-Catch stopfen
         public void ErstelleWordDatei()
         {
-            //Word öffnen
-            Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+            var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
 
             wordApp.Visible = true;
             wordApp.ShowAnimation = false;
 
+            var topAndBottomPaddingCell = wordApp.CentimetersToPoints(0.2f);
+
             //Für jede Klasse ein eigenes Dokument
             var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
-            
+
             foreach (var klasse in schülerGroupedByClass)
             {
                 //neues leeres Dokument erstellen
                 Document document = wordApp.Documents.Add();
+
                 SetMarginsOfWordDocument(document, 25);
                 SetStyle(document, 11, "Arial");
 
                 var anzahlSchülerAufSeite = 0;
-                var übrigeSchüler = SchuelerListe.Count;
+                var übrigeSchüler = klasse.Count();
 
                 var schülerNachNachnamenSortiert = klasse.OrderBy(schueler => schueler.Nachname);
                 //Durch die Schüler iterieren
@@ -57,7 +63,9 @@ namespace running_bunny.WordErstellung
 
                     //Zeitplan erstellen
                     var tabellePara = document.Content.Paragraphs.Add();
+
                     Table zeitplan = document.Tables.Add(tabellePara.Range, 6, 6);
+                    zeitplan.Range.Paragraphs.SpaceAfter = 0;
                     zeitplan.Borders.Enable = 1;
                     zeitplan.AllowAutoFit = true;
                     SetAutoFitTable(zeitplan, wordApp);
@@ -67,7 +75,7 @@ namespace running_bunny.WordErstellung
                         //Header für erste Zeile schreiben
                         if (zeile.Index == 1)
                         {
-                            FillRow(zeile, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
+                            FillRowAndSetTopPadding(zeile, topAndBottomPaddingCell, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
                             zeile.Range.Font.Bold = 1;
 
                             //TODO: Hier noch Font ändern maybe
@@ -85,37 +93,14 @@ namespace running_bunny.WordErstellung
                             var zugehörigerWunsch =
                                 schueler.Wuensche.FirstOrDefault(wunsch => wunsch.VeranstaltungsId == zelleRaumZeitPlanSchueler.Value.Veranstaltung.Id);
 
-                            FillRow(zeile,
+                            FillRowAndSetTopPadding(zeile,
+                                topAndBottomPaddingCell,
                                 zelleRaumZeitPlanSchueler.Key.ToString(),
                                 _uhrzeitenZuZeitslot[zelleRaumZeitPlanSchueler.Key],
                                 zelleRaumZeitPlanSchueler.Value.Raum.Bezeichnung,
                                 zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
                                 zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
                                 zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
-                            /*
-                            // Font für einzelnen Kursenzeile ändern
-                            // alle Spalten bzw. Zellen werden vertikal zentriert
-                            foreach (Cell kursZelle in zeile.Cells)
-                            {
-                                kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;            // Vertikale Ausrichtung
-                                // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
-                                if (spalte.Index == 0 || 1 || 2)
-                                {
-
-                                }
-                                if (zeitplan.Columns. == )
-                            }
-                            // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
-                            if (spalte.Index == 0 || 1 || 2)
-                            {
-
-                            }
-                                foreach (Cell kursZelle in zeile.Cells)
-                            {
-                                kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                                kursZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                            }
-                            */
                         }
                     }
 
@@ -127,10 +112,10 @@ namespace running_bunny.WordErstellung
                         anzahlSchülerAufSeite = 0;
                     }
                 }
+
+                document.SaveAs2(@$"{laufzettelDir}\{klasse.Key}.docx", ReadOnlyRecommended: false);
+                document.Close();
             }
-            //TODO: Pfad anpassen oder gar nicht speichern?
-            //document.SaveAs2(@"D:\SchülerLaufZettel.docx");
-            //wordApp.Quit();
         }
 
         /// <summary>
@@ -146,9 +131,10 @@ namespace running_bunny.WordErstellung
             document.PageSetup.BottomMargin = margin;
         }
 
-        private void FillRow(Row row, string val1, string val2, string val3, string val4, string val5, string val6)
+        private void FillRowAndSetTopPadding(Row row, float topPadding, string val1, string val2, string val3, string val4, string val5, string val6)
         {
-            //row.Cells[0].Range.Text = val1;
+            SetTopPaddingOfAllCells(row, topPadding);
+
             row.Cells[1].Range.Text = val1;
             row.Cells[1].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
             row.Cells[2].Range.Text = val2;
@@ -161,6 +147,15 @@ namespace running_bunny.WordErstellung
             row.Cells[6].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
         }
 
+        private void SetTopPaddingOfAllCells(Row row, float topAndBottomPadding)
+        {
+            foreach (Cell cell in row.Cells)
+            {
+                cell.TopPadding = topAndBottomPadding;
+                cell.BottomPadding = topAndBottomPadding;
+            }
+        }
+
         private void SetAutoFitTable(Table zeitplan, Microsoft.Office.Interop.Word.Application app)
         {
             //Zeitslot
@@ -170,7 +165,7 @@ namespace running_bunny.WordErstellung
             //Raum
             zeitplan.Columns[3].SetWidth(app.CentimetersToPoints(1.5f), WdRulerStyle.wdAdjustFirstColumn);
             //Unternehmen
-            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(5.5f), WdRulerStyle.wdAdjustFirstColumn);
+            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(5f), WdRulerStyle.wdAdjustFirstColumn);
             //Prio-Nr.
             zeitplan.Columns[6].SetWidth(app.CentimetersToPoints(1.4f), WdRulerStyle.wdAdjustFirstColumn);
 
