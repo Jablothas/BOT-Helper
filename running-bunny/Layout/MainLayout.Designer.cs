@@ -35,7 +35,6 @@
             titleLabel = new Label();
             logoPictureBox = new PictureBox();
             contentPanel = new Panel();
-            loadingAnimation = new PictureBox();
             labelWelcomeMsg = new Label();
             PanelUpload = new Panel();
             InitProcess = new Button();
@@ -45,12 +44,12 @@
             SelectRooms = new Button();
             SelectStudentReset = new Button();
             SelectStudent = new Button();
+            processingInfo = new Label();
             headerPnl.SuspendLayout();
             titleBackgroundPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)BtnClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).BeginInit();
             contentPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)loadingAnimation).BeginInit();
             PanelUpload.SuspendLayout();
             SuspendLayout();
             // 
@@ -114,7 +113,7 @@
             // contentPanel
             // 
             contentPanel.BackColor = SystemColors.HighlightText;
-            contentPanel.Controls.Add(loadingAnimation);
+            contentPanel.Controls.Add(processingInfo);
             contentPanel.Controls.Add(labelWelcomeMsg);
             contentPanel.Controls.Add(PanelUpload);
             contentPanel.Dock = DockStyle.Fill;
@@ -122,17 +121,6 @@
             contentPanel.Name = "contentPanel";
             contentPanel.Size = new Size(507, 463);
             contentPanel.TabIndex = 1;
-            // 
-            // loadingAnimation
-            // 
-            loadingAnimation.Image = Properties.Resources.loading;
-            loadingAnimation.Location = new Point(206, 401);
-            loadingAnimation.Name = "loadingAnimation";
-            loadingAnimation.Size = new Size(100, 50);
-            loadingAnimation.SizeMode = PictureBoxSizeMode.CenterImage;
-            loadingAnimation.TabIndex = 7;
-            loadingAnimation.TabStop = false;
-            loadingAnimation.Visible = false;
             // 
             // labelWelcomeMsg
             // 
@@ -251,6 +239,17 @@
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;
             // 
+            // processingInfo
+            // 
+            processingInfo.AutoSize = true;
+            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            processingInfo.ForeColor = Color.LawnGreen;
+            processingInfo.Location = new Point(53, 413);
+            processingInfo.Name = "processingInfo";
+            processingInfo.Size = new Size(403, 21);
+            processingInfo.TabIndex = 7;
+            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
+            // 
             // MainLayout
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -267,7 +266,7 @@
             ((System.ComponentModel.ISupportInitialize)BtnClose).EndInit();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
             contentPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)loadingAnimation).EndInit();
+            contentPanel.PerformLayout();
             PanelUpload.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -289,6 +288,6 @@
         private Button SelectCompanies;
         private Button InitProcess;
         private Label labelWelcomeMsg;
-        private PictureBox loadingAnimation;
+        private Label processingInfo;
     }
 }

@@ -29,10 +29,8 @@ namespace running_bunny
                 MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
                 return;
             }
-            loadingAnimation.Visible = true;
             var verarbeitung = new Verarbeitung();
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
-            loadingAnimation.Visible = false;
             MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
         }
 
@@ -85,7 +83,7 @@ namespace running_bunny
             SelectStudent.Enabled = true;
             SelectStudent.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectStudent));
-            SelectStudent.Text = "Schülerliste hochladen";
+            SelectStudent.Text = "Wahlliste hochladen";
         }
 
         private void SelectRooms_Click(object sender, EventArgs e)
@@ -113,7 +111,7 @@ namespace running_bunny
             SelectCompanies.Enabled = true;
             SelectCompanies.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectCompanies));
-            SelectCompanies.Text = "Unternehmensliste hochladen";
+            SelectCompanies.Text = "Veranstalterliste hochladen";
         }
     }
 }
