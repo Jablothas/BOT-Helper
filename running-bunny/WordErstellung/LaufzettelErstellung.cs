@@ -12,7 +12,7 @@ namespace running_bunny.WordErstellung
             SchuelerListe = schueler.ToList();
         }
 
-        private Dictionary<Zeitslot, string> _uhrzeitenZuZeitslot = new Dictionary<Zeitslot, string>()
+        public static Dictionary<Zeitslot, string> _uhrzeitenZuZeitslot = new Dictionary<Zeitslot, string>()
         {
             {Zeitslot.A, "8:45 - 9:30" },
             {Zeitslot.B, "9:50 - 10:35" },

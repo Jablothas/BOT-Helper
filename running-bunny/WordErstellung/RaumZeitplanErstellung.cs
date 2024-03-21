@@ -69,6 +69,8 @@ namespace running_bunny.WordErstellung
                 for (int i = 1; i <= Enum.GetNames(typeof(Zeitslot)).Length; i++)
                 {
                     table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
+                    table.Cell(1, i + 1).Range.Text += LaufzettelErstellung._uhrzeitenZuZeitslot[((Zeitslot)i)];
+
                 }
 
                 string tabellenStil = "TabellenStil";
