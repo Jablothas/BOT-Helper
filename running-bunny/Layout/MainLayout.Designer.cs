@@ -165,7 +165,7 @@
             InitProcess.Location = new Point(12, 180);
             InitProcess.Name = "InitProcess";
             InitProcess.Size = new Size(456, 50);
-            InitProcess.TabIndex = 10;
+            InitProcess.TabIndex = 4;
             InitProcess.Text = "Verarbeitung starten";
             InitProcess.UseVisualStyleBackColor = false;
             InitProcess.Click += InitProcess_Click;
@@ -192,7 +192,7 @@
             SelectCompanies.Location = new Point(12, 68);
             SelectCompanies.Name = "SelectCompanies";
             SelectCompanies.Size = new Size(456, 50);
-            SelectCompanies.TabIndex = 8;
+            SelectCompanies.TabIndex = 1;
             SelectCompanies.Text = "Veranstalterliste hochladen";
             SelectCompanies.UseVisualStyleBackColor = false;
             SelectCompanies.Click += SelectCompanies_Click;
@@ -219,7 +219,7 @@
             SelectRooms.Location = new Point(12, 124);
             SelectRooms.Name = "SelectRooms";
             SelectRooms.Size = new Size(456, 50);
-            SelectRooms.TabIndex = 6;
+            SelectRooms.TabIndex = 3;
             SelectRooms.Text = "Raumliste hochladen";
             SelectRooms.UseVisualStyleBackColor = false;
             SelectRooms.Click += SelectRooms_Click;
@@ -246,7 +246,7 @@
             SelectStudent.Location = new Point(12, 12);
             SelectStudent.Name = "SelectStudent";
             SelectStudent.Size = new Size(456, 50);
-            SelectStudent.TabIndex = 4;
+            SelectStudent.TabIndex = 0;
             SelectStudent.Text = "Wahlliste hochladen";
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;

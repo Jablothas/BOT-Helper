@@ -26,13 +26,13 @@ namespace running_bunny
         {
             if (FilePaths.Count != 3)
             {
-                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
+                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.", "Halt!");
                 return;
             }
             processingInfo.Visible = true;
             var verarbeitung = new Verarbeitung();
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
-            MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
+            MessageBox.Show("Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nun schließen.", "Erfolg!");
             processingInfo.Visible = false;
         }
 
