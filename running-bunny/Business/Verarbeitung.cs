@@ -19,14 +19,16 @@ namespace running_bunny.Business
             var raumExcel = ReadExcel(raumFilePath);
             var raumListe = RaumErstellen(raumExcel);
 
-            RaumZeitPlanErstellung raumZeitPlanErstellung = new RaumZeitPlanErstellung(schuelerListe, veranstaltungsListe, raumListe);
+            RaumZeitplan raumZeitPlan = new RaumZeitplan(schuelerListe, veranstaltungsListe, raumListe);
 
             SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung = 
-                new SchuelerZuweisungZuZeitplan(raumZeitPlanErstellung.SchuelerListe, raumZeitPlanErstellung.RaumZeitplan);
+                new SchuelerZuweisungZuZeitplan(raumZeitPlan.SchuelerListe, raumZeitPlan.RaumZeitplanListe);
 
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
             List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
+            RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
+            raumzeitplanWord.ErstelleWordDatei();
             var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
             laufzettelErstellung.ErstelleWordDatei();
         }
