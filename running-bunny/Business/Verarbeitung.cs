@@ -29,8 +29,12 @@ namespace running_bunny.Business
 
             RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
             raumzeitplanWord.ErstelleWordDatei();
+
             var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
             laufzettelErstellung.ErstelleWordDatei();
+
+            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
+            anwesenheitsliste.ErstelleWordDatei();
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)

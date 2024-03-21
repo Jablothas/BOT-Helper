@@ -151,6 +151,7 @@ namespace running_bunny.RaumZeitPlan
                                 for (int i = 0; i < ver.AnzahlKurse; i++)
                                 {
                                     ver.RaeumeBesetzt++; //erhöhung anzahl besesetzte räume um 1
+                                    ver.Zeitslots.Add((Zeitslot)(index + i + 1)); //speichert alle slots ab, die von der veranstaltung besetzt werden
                                     ZelleRaumZeitplan zelle = new ZelleRaumZeitplan((Zeitslot)(index + i + 1), ver, raum); //zelle wird erstellt
                                     raum.BelegteSlots[index + i] = zelle;  //raumbelegung wird abgespeichert
                                     RaumZeitplanListe.Add(zelle); //zelle wird in RaumZeitPlanliste hinzugefügt
