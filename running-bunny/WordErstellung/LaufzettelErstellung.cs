@@ -1,6 +1,7 @@
 ﻿using running_bunny.Model;
 using Microsoft.Office.Interop.Word;
 using running_bunny.RaumZeitPlan;
+using static System.Windows.Forms.AxHost;
 
 namespace running_bunny.WordErstellung
 {
@@ -12,7 +13,7 @@ namespace running_bunny.WordErstellung
             SchuelerListe = schueler.ToList();
         }
 
-        private Dictionary<Zeitslot, string> _uhrzeitenZuZeitslot = new Dictionary<Zeitslot, string>()
+        public static Dictionary<Zeitslot, string> _uhrzeitenZuZeitslot = new Dictionary<Zeitslot, string>()
         {
             {Zeitslot.A, "8:45 - 9:30" },
             {Zeitslot.B, "9:50 - 10:35" },
@@ -61,15 +62,15 @@ namespace running_bunny.WordErstellung
                     //Header für erste Zeile schreiben
                     if (zeile.Index == 1)
                     {
-                        FillRow(zeile, string.Empty, "Zeit", "Raum", "Veranstaltung", string.Empty, "Wunsch");
+                        FillRow(zeile, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
                         zeile.Range.Font.Bold = 1;
 
                         //TODO: Hier noch Font ändern maybe
                         zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
                         foreach (Cell headerZelle in zeile.Cells)
                         {
-                            headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
-                            headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                            headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;          // Vertikale Ausrichtung
+                            headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;  // horizontale Ausrichtung
                         }
                     }
                     else
@@ -86,6 +87,30 @@ namespace running_bunny.WordErstellung
                             zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
                             zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
                             zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
+                        /*
+                        // Font für einzelnen Kursenzeile ändern
+                        // alle Spalten bzw. Zellen werden vertikal zentriert
+                        foreach (Cell kursZelle in zeile.Cells)
+                        {
+                            kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;            // Vertikale Ausrichtung
+                            // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
+                            if (spalte.Index == 0 || 1 || 2)
+                            {
+
+                            }
+                            if (zeitplan.Columns. == )
+                        }
+                        // Die Spalten "Slot-Buchstabe", "Zeit", "Raum" und "Wunsch" werden horizontal zentriert
+                        if (spalte.Index == 0 || 1 || 2)
+                        {
+
+                        }
+                            foreach (Cell kursZelle in zeile.Cells)
+                        {
+                            kursZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                            kursZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+                        }
+                        */
                     }
                 }
 
@@ -119,11 +144,15 @@ namespace running_bunny.WordErstellung
         {
             //row.Cells[0].Range.Text = val1;
             row.Cells[1].Range.Text = val1;
+            row.Cells[1].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
             row.Cells[2].Range.Text = val2;
+            row.Cells[2].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
             row.Cells[3].Range.Text = val3;
+            row.Cells[3].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
             row.Cells[4].Range.Text = val4;
             row.Cells[5].Range.Text = val5;
             row.Cells[6].Range.Text = val6;
+            row.Cells[6].Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
         }
 
         private void SetAutoFitTable(Table zeitplan, Microsoft.Office.Interop.Word.Application app)
