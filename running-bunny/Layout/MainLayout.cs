@@ -32,7 +32,7 @@ namespace running_bunny
             processingInfo.Visible = true;
             var verarbeitung = new Verarbeitung();
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
-            MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
+            MessageBox.Show("Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.", "Erfolg!");
             processingInfo.Visible = false;
         }
 
