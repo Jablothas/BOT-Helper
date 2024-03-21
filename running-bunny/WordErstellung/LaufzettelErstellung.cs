@@ -32,7 +32,7 @@ namespace running_bunny.WordErstellung
             wordApp.ShowAnimation = false;
 
             //Für jede Klasse ein eigenes Dokument
-            var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse);
+            var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
             
             foreach (var klasse in schülerGroupedByClass)
             {
