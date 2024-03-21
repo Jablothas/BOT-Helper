@@ -33,11 +33,12 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                 var schuelerOrderedByScore = SchuelerListe.OrderBy(schueler => schueler.SummeGewichtung);
 
                 foreach (var schueler in schuelerOrderedByScore)
-                {
+                {                    
                     var wunsch = schueler.Wuensche.SingleOrDefault(wunsch => wunsch.Prioritaet == wunschPrio);
-                    if (wunsch != null)
+                    //Wenn der Wunsch bereits berücksichtigt ist, wird kein zweites Mal dieselbe Veranstaltung zugewiesen
+                    if (wunsch != null && !schueler.BelegteZeitslots.Select(zeitslot => zeitslot.Value.Veranstaltung.Id).Contains(wunsch.VeranstaltungsId))
                     {
-                        var passendeZellen = SuchePassendeZellen(ZelleRaumZeitplan, wunsch, schueler.BelegteZeitslots.Select(slotZelle => slotZelle.Key));
+                        var passendeZellen = SuchePassendeZellen(ZelleRaumZeitplan, wunsch, schueler.BelegteZeitslots.Select(slotZelle => slotZelle.Key));                       
                         if (passendeZellen != null)
                         {
                             WeiseZelleSchuelerWunschZu(wunschPrio, schueler, wunsch, passendeZellen.First());
@@ -132,7 +133,9 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
                         throw new NotImplementedException("Hier müssten prolly neue Kurse erstellt werden");
                     }
 
-                    var ersteFreieZelle = freieZellenNachZeitslot[fehlenderZeitslot].OrderBy(zelle => zelle.SchuelerListe.Count).First();
+                    var möglicheZellen = freieZellenNachZeitslot[fehlenderZeitslot].OrderBy(zelle => zelle.SchuelerListe.Count);
+                    var zugewieseneVeranstaltungIds = schueler.BelegteZeitslots.Select(zeitslot => zeitslot.Value.Veranstaltung.Id);
+                    var ersteFreieZelle = möglicheZellen.First(zelle => !zugewieseneVeranstaltungIds.Contains(zelle.Veranstaltung.Id));
 
                     ersteFreieZelle.SchuelerListe.Add(schueler);
                     schueler.BelegteZeitslots.Add(fehlenderZeitslot, ersteFreieZelle);
