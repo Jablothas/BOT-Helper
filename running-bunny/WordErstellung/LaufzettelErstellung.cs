@@ -40,7 +40,7 @@ namespace running_bunny.WordErstellung
             var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
 
             foreach (var klasse in schülerGroupedByClass)
-            {
+            {                
                 //neues leeres Dokument erstellen
                 Document document = wordApp.Documents.Add();
 
@@ -165,7 +165,7 @@ namespace running_bunny.WordErstellung
             //Raum
             zeitplan.Columns[3].SetWidth(app.CentimetersToPoints(1.5f), WdRulerStyle.wdAdjustFirstColumn);
             //Unternehmen
-            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(5f), WdRulerStyle.wdAdjustFirstColumn);
+            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(4.5f), WdRulerStyle.wdAdjustFirstColumn);
             //Prio-Nr.
             zeitplan.Columns[6].SetWidth(app.CentimetersToPoints(1.4f), WdRulerStyle.wdAdjustFirstColumn);
 
