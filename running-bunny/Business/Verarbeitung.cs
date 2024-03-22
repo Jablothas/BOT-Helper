@@ -40,16 +40,16 @@ namespace running_bunny.Business
 
             Word.Application wordApp = new Word.Application();
 
-            RaumZeitplanErstellung raumzeitplanWord =
-                new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            raumzeitplanWord.ErstelleWordDatei();
+            //RaumZeitplanErstellung raumzeitplanWord =
+            //    new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+            //raumzeitplanWord.ErstelleWordDatei();
 
-            var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-            laufzettelErstellung.ErstelleWordDatei();
+            //var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+            //laufzettelErstellung.ErstelleWordDatei();
 
-            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
-                = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            anwesenheitsliste.ErstelleWordDatei();
+            //AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
+            //    = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+            //anwesenheitsliste.ErstelleWordDatei();
 
             wordApp.Quit();
         }
@@ -107,12 +107,6 @@ namespace running_bunny.Business
                 }
                 schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
-            }
-            Debug.WriteLine("////////////////////////////");
-            Debug.WriteLine("SCHÜLERLISTE");
-            foreach (Schueler schueler in schuelerListe)
-            {
-                Debug.WriteLine($"Vorname: {schueler.Vorname}     Nachname: {schueler.Nachname}");
             }
             return schuelerListe;
         }
@@ -209,7 +203,6 @@ namespace running_bunny.Business
 
                 raumListe.Add(objektRaum);
             }
-            // Debug.WriteLine("fertig");
             return raumListe;
         }
 
