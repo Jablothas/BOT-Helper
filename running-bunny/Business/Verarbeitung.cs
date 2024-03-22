@@ -161,12 +161,6 @@ namespace running_bunny.Business
                 schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
             }
-            Debug.WriteLine("////////////////////////////");
-            Debug.WriteLine("SCHÜLERLISTE");
-            foreach (Schueler schueler in schuelerListe)
-            {
-                Debug.WriteLine($"Vorname: {schueler.Vorname}     Nachname: {schueler.Nachname}");
-            }
             return schuelerListe;
         }
         private List<Veranstaltung> VeranstaltungsListeErstellen(string[,] excel)
@@ -262,7 +256,6 @@ namespace running_bunny.Business
 
                 raumListe.Add(objektRaum);
             }
-            // Debug.WriteLine("fertig");
             return raumListe;
         }
 

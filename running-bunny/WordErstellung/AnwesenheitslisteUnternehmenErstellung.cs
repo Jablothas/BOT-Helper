@@ -64,13 +64,13 @@ namespace running_bunny.WordErstellung
             {
                 var sindWuenscheVorhanden = RaumZeitplanListe.Where(zelle => zelle.Veranstaltung.Id == veranstaltung.Id).ToList();
 
-                if (sindWuenscheVorhanden != null)
-                {
-                    Word.Paragraph paragraphFirmennamen = doc.Paragraphs.Add();
-                    paragraphFirmennamen.set_Style("firmennamenStil");
-                    firmennamenText = "\n" + veranstaltung.UnternehmensName + " - " + veranstaltung.Fachrichtung + "\n\n";
-                    paragraphFirmennamen.Range.Text = firmennamenText;
-
+                    if (sindWuenscheVorhanden != null)
+                    {
+                        Word.Paragraph paragraphFirmennamen = doc.Paragraphs.Add();
+                        paragraphFirmennamen.set_Style("firmennamenStil");
+                        firmennamenText = "\n" + veranstaltung.UnternehmensName + " - " + veranstaltung.Fachrichtung + "\n";
+                        paragraphFirmennamen.Range.Text = firmennamenText;
+                        
 
                     ZelleRaumZeitplan zelleZuVeranstaltungUndSlot = null;
                     Zeitslot slot = Zeitslot.A; //temporäre Übergabe, nur für Initialisierung

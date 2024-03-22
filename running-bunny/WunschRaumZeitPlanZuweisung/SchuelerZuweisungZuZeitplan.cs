@@ -18,8 +18,6 @@ namespace running_bunny.WunschRaumZeitPlanZuweisung
 
         public void Erstellen()
         {
-            Debug.WriteLine("////////////////////////");
-            Debug.WriteLine("Zuweisung Wunsch zu Zelle");
 
             SchülerNachWünschenKursenZuweisen();
             WeiseAlleSchülerMitFreienZeitslotsVeranstaltungenZu();

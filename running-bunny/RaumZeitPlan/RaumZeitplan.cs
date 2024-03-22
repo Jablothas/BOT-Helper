@@ -65,73 +65,9 @@ namespace running_bunny.RaumZeitPlan
                 }
 
                 veranstaltung.BerechneBenoetigteKurse();
-                Debug.WriteLine($"{counter}.     " + veranstaltung.UnternehmensName + " " + veranstaltung.Fachrichtung + " " + veranstaltung.AnzahlWünsche + " Benötigte Kurse " + veranstaltung.AnzahlKurse + "\n");
 
             }
-            Debug.WriteLine("///////////////////////////"); Debug.WriteLine("///////////////////////////");
         }
-        //private void RaumZeitPlanSpaltenweiseZuweisung() nicht in Nutzung!
-        //{
-        //    foreach (int zeitslot in Enum.GetValues(typeof(Zeitslot)))
-        //    {
-        //        Zeitslot tmpZeitslot = (Zeitslot)Enum.Parse(typeof(Zeitslot), zeitslot.ToString());
-
-        //        if (zeitslot == 1 )
-        //        {
-        //            foreach (Veranstaltung veranstaltung in VeranstaltungsListe)
-        //            {
-        //                Random random = new Random();
-
-        //                if(zeitslot >= (int)veranstaltung.FruehsterZeitSlot)
-        //                {
-
-        //                    Raum freierRaum = SucheFreienRaum();
-        //                    if(freierRaum != null)
-        //                    {
-        //                        ZelleRaumZeitplan zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, freierRaum);
-        //                        veranstaltung.RaeumeBesetzt++;
-
-        //                        RaumZeitplan.Add(zelleRaumZeitplan);
-        //                    }
-        //                }
-        //            }
-        //            RaumListe.ForEach(raum => raum.IstBelegt = false);
-        //        }
-        //        if(zeitslot > 1)
-        //        {
-        //            //Zuweisung  Unternehmen mit mehreren Zeitslots = gleiche Räume (1),
-        //            //Zuweisung  an übrigen Veranstaltungen ohne Slot bisher (2)
-        //            foreach(Veranstaltung veranstaltung in VeranstaltungsListe)
-        //            {
-        //                if (zeitslot <= (int)veranstaltung.FruehsterZeitSlot) continue;
-        //                if(veranstaltung.RaeumeBesetzt < veranstaltung.AnzahlRaeume)
-        //                {
-        //                    ZelleRaumZeitplan zelle = RaumZeitplan.Find(zelle => zelle.Veranstaltung.Id == veranstaltung.Id && zelle.Raum != null); //Suche nach vergangen Zellen für (1) 
-        //                    ZelleRaumZeitplan zelleRaumZeitplan;
-        //                    if(zelle != null) //(1) gefunden
-        //                    {
-        //                        zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, zelle.Raum);
-        //                        RaumListe.Find(raum => raum.Bezeichnung == zelle.Raum.Bezeichnung).IstBelegt = true;
-        //                    }
-        //                    else //(2)
-        //                    {
-        //                        Raum freierRaum = SucheFreienRaum();
-        //                        if (freierRaum != null)
-        //                            zelleRaumZeitplan = new ZelleRaumZeitplan(tmpZeitslot, veranstaltung, freierRaum);
-        //                        else
-        //                            continue;
-        //                    }
-        //                    veranstaltung.RaeumeBesetzt++;
-        //                    RaumZeitplan.Add(zelleRaumZeitplan);
-        //                    //if(zelleRaumZeitplan.Veranstaltung.)
-        //                }
-        //            }
-        //            RaumListe.ForEach(raum => raum.IstBelegt = false);
-        //        }
-
-        //    }
-        //    DebugRaumZeitPlan(RaumZeitplan);
-        //}
 
         public void RaumZeitPlanZeilenweiseZuweisung()
         {
@@ -162,19 +98,6 @@ namespace running_bunny.RaumZeitPlan
 
                     }
                 }
-            }
-            DebugRaumZeitPlan(RaumZeitplanListe);
-        }
-
-        private void DebugRaumZeitPlan(List<ZelleRaumZeitplan> raumZeitPlan)
-        {
-            int counter = 0;
-            // raumZeitPlan.Sort();
-            Debug.WriteLine("RAUMZEITPLANUNG");
-            foreach (ZelleRaumZeitplan raumZeit in raumZeitPlan)
-            {
-                counter++;
-                Debug.WriteLine($"{counter}." + "  UNTERNEHMEN:" + raumZeit.Veranstaltung.UnternehmensName + "   VERANSTALTUNG: " + raumZeit.Veranstaltung.Fachrichtung + "  RAUM " + raumZeit.Raum.Bezeichnung + "  ZEITSLOT " + raumZeit.Zeitslot);
             }
         }
 

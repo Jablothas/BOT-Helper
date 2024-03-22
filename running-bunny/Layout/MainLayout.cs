@@ -34,6 +34,7 @@ namespace running_bunny
             verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
             MessageBox.Show("Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nun schließen.", "Erfolg!");
             processingInfo.Visible = false;
+            ForwardToDownloads();
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
@@ -114,6 +115,11 @@ namespace running_bunny
             SelectCompanies.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectCompanies));
             SelectCompanies.Text = "Veranstalterliste hochladen";
+        }
+        private void ForwardToDownloads()
+        {
+            string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
+            if (System.IO.Directory.Exists(downloadsPath)) Process.Start("explorer.exe", downloadsPath);
         }
     }
 }
