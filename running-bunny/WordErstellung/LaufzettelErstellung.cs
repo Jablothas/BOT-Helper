@@ -26,13 +26,9 @@ namespace running_bunny.WordErstellung
             {Zeitslot.E, "12:25 - 13:10" },
         };
 
-        //TODO: Alles in ein Try-Catch stopfen
         public void ErstelleWordDatei()
         {
             var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
-
-            wordApp.Visible = true;
-            wordApp.ShowAnimation = false;
 
             var topAndBottomPaddingCell = wordApp.CentimetersToPoints(0.2f);
 
@@ -40,7 +36,7 @@ namespace running_bunny.WordErstellung
             var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
 
             foreach (var klasse in schülerGroupedByClass)
-            {
+            {                
                 //neues leeres Dokument erstellen
                 Document document = wordApp.Documents.Add();
 
@@ -78,7 +74,6 @@ namespace running_bunny.WordErstellung
                             FillRowAndSetTopPadding(zeile, topAndBottomPaddingCell, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
                             zeile.Range.Font.Bold = 1;
 
-                            //TODO: Hier noch Font ändern maybe
                             zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
                             foreach (Cell headerZelle in zeile.Cells)
                             {
@@ -165,7 +160,7 @@ namespace running_bunny.WordErstellung
             //Raum
             zeitplan.Columns[3].SetWidth(app.CentimetersToPoints(1.5f), WdRulerStyle.wdAdjustFirstColumn);
             //Unternehmen
-            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(5f), WdRulerStyle.wdAdjustFirstColumn);
+            zeitplan.Columns[4].SetWidth(app.CentimetersToPoints(4.5f), WdRulerStyle.wdAdjustFirstColumn);
             //Prio-Nr.
             zeitplan.Columns[6].SetWidth(app.CentimetersToPoints(1.4f), WdRulerStyle.wdAdjustFirstColumn);
 

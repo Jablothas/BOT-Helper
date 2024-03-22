@@ -23,47 +23,44 @@ namespace running_bunny.WordErstellung
         public void ErstelleWordDatei()
         {
             object filename = "Anwesenheitslisten"; //Hard coded
-            Word.Document doc = wordApp.Documents.Add();
-            try
+            // Neues Dokument erstellen
+            Word.Document doc = wordApp.Documents.Add();           
+
+            Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
+
+            doc.Content.Font.Name = "Arial";
+
+            //Ueberschrift
+            string ueberschriftStil = "ueberschriftStil";
+            ErstelleUeberschriftStil(wordApp, ueberschriftStil);
+            paragraphUeberschrift.set_Style(ueberschriftStil);
+
+            String ueberschriftText = "Anwesenheitsliste" + "\n";
+            paragraphUeberschrift.Range.Text = ueberschriftText;
+
+            //Firmennamen
+            string firmennamenStil = "firmennamenStil";
+            ErstelleFirmennamenStil(wordApp, firmennamenStil);
+            String firmennamenText;
+
+            //Tabellenstiel
+            string tabellenStil = "TabellenStil";
+            ErstelleTabellenStil(wordApp, tabellenStil);
+
+            //Uhrzeit
+            string uhrzeitStil = "uhrzeitStil";
+            ErstelleUhrzeitStil(wordApp, uhrzeitStil);
+
+            String uhrzeitText = null;
+
+            // Tabelle erstellen
+            int numRows = 0;
+            int numCols = 4;
+
+
+            foreach (Veranstaltung veranstaltung in VeranstaltungsListe)
             {
-                wordApp.Visible = true;
-                // Neues Dokument erstellen
-
-                Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
-                
-                doc.Content.Font.Name = "Arial";
-
-                //Ueberschrift
-                string ueberschriftStil = "ueberschriftStil";
-                ErstelleUeberschriftStil(wordApp, ueberschriftStil);
-                paragraphUeberschrift.set_Style(ueberschriftStil);
-
-                String ueberschriftText = "Anwesenheitsliste" + "\n";
-                paragraphUeberschrift.Range.Text = ueberschriftText;
-
-                //Firmennamen
-                string firmennamenStil = "firmennamenStil";
-                ErstelleFirmennamenStil(wordApp, firmennamenStil);
-                String firmennamenText;
-
-                //Tabellenstiel
-                string tabellenStil = "TabellenStil";
-                ErstelleTabellenStil(wordApp, tabellenStil);
-
-                //Uhrzeit
-                string uhrzeitStil = "uhrzeitStil";
-                ErstelleUhrzeitStil(wordApp, uhrzeitStil);
-                
-                String uhrzeitText = null;
-
-                // Tabelle erstellen
-                int numRows = 0;
-                int numCols = 4;
-
-
-                foreach (Veranstaltung veranstaltung in VeranstaltungsListe)
-                {
-                    var sindWuenscheVorhanden = RaumZeitplanListe.Where(zelle => zelle.Veranstaltung.Id == veranstaltung.Id).ToList();
+                var sindWuenscheVorhanden = RaumZeitplanListe.Where(zelle => zelle.Veranstaltung.Id == veranstaltung.Id).ToList();
 
                     if (sindWuenscheVorhanden != null)
                     {
@@ -73,49 +70,44 @@ namespace running_bunny.WordErstellung
                         paragraphFirmennamen.Range.Text = firmennamenText;
                         
 
-                        ZelleRaumZeitplan zelleZuVeranstaltungUndSlot = null;
-                        Zeitslot slot = Zeitslot.A; //temporäre Übergabe, nur für Initialisierung
+                    ZelleRaumZeitplan zelleZuVeranstaltungUndSlot = null;
+                    Zeitslot slot = Zeitslot.A; //temporäre Übergabe, nur für Initialisierung
 
-                        foreach (Zeitslot slotJetzt in veranstaltung.Zeitslots)
+                    foreach (Zeitslot slotJetzt in veranstaltung.Zeitslots)
+                    {
+                        zelleZuVeranstaltungUndSlot = RaumZeitplanListe.Find(zelle => zelle.Veranstaltung.Id == veranstaltung.Id && slotJetzt == zelle.Zeitslot);
+                        numRows = zelleZuVeranstaltungUndSlot.SchuelerListe.Count;
+                        slot = slotJetzt;
+
+                        //Slot Uhrzeit Print
+                        Word.Paragraph paragraphUhrzeit = doc.Paragraphs.Add();
+                        paragraphUhrzeit.set_Style("uhrzeitStil");
+                        uhrzeitText = "\n" + LaufzettelErstellung._uhrzeitenZuZeitslot[slot] + "\n";
+                        paragraphUhrzeit.Range.Text = uhrzeitText;
+
+
+                        //Tabellenerzeugung
+
+                        Word.Table table = doc.Tables.Add(paragraphUhrzeit.Range, 1, numCols); // Beispiel: 2 Zeilen, 2 Spalten
+                        table.set_Style("TabellenStil");
+
+
+                        //Tabellenheader hard codiert
+                        table.Cell(1, 1).Range.Text = "Klasse";
+                        table.Cell(1, 2).Range.Text = "Name";
+                        table.Cell(1, 3).Range.Text = "Vorname";
+                        table.Cell(1, 4).Range.Text = "Anwesend?";
+
+                        // Tabelle füllen
+                        foreach (Schueler schueler in zelleZuVeranstaltungUndSlot.SchuelerListe)
                         {
-                            zelleZuVeranstaltungUndSlot = RaumZeitplanListe.Find(zelle => zelle.Veranstaltung.Id == veranstaltung.Id && slotJetzt == zelle.Zeitslot);
-                            numRows = zelleZuVeranstaltungUndSlot.SchuelerListe.Count;
-                            slot = slotJetzt;
-
-                            //Slot Uhrzeit Print
-                            Word.Paragraph paragraphUhrzeit = doc.Paragraphs.Add();
-                            paragraphUhrzeit.set_Style("uhrzeitStil");
-                            uhrzeitText = "\n" + LaufzettelErstellung._uhrzeitenZuZeitslot[slot] + "\n";
-                            paragraphUhrzeit.Range.Text = uhrzeitText;
-                            
-
-                            //Tabellenerzeugung
-                                           
-                            Word.Table table = doc.Tables.Add(paragraphUhrzeit.Range, 1, numCols); // Beispiel: 2 Zeilen, 2 Spalten
-                            table.set_Style("TabellenStil");
-                            
-
-                            //Tabellenheader hard codiert
-                            table.Cell(1, 1).Range.Text = "Klasse";
-                            table.Cell(1, 2).Range.Text = "Name";
-                            table.Cell(1, 3).Range.Text = "Vorname";
-                            table.Cell(1, 4).Range.Text = "Anwesend?";
-
-                            // Tabelle füllen
-                            foreach (Schueler schueler in zelleZuVeranstaltungUndSlot.SchuelerListe)
-                            {
-                                FügeEineZeileEinerTabelleHinzu(table, new string[] { schueler.Klasse, schueler.Nachname, schueler.Vorname });
-                            }
+                            FügeEineZeileEinerTabelleHinzu(table, new string[] { schueler.Klasse, schueler.Nachname, schueler.Vorname });
                         }
                     }
-                    if(VeranstaltungsListe.IndexOf(veranstaltung) != VeranstaltungsListe.Count -1)
-                    doc.Words.Last.InsertBreak(WdBreakType.wdPageBreak);//Seitenumbruch
                 }
+                doc.Words.Last.InsertBreak(WdBreakType.wdPageBreak);//Seitenumbruch
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+
             doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
             doc.Close();
         }
@@ -125,14 +117,12 @@ namespace running_bunny.WordErstellung
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
             style.Font.Size = 16;
             style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-            style.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray10;
         }
         private void ErstelleFirmennamenStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
             style.Font.Size = 15;
-            style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
-            style.Shading.BackgroundPatternColor = Word.WdColor.wdColorGray10;
+            style.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;            
         }
         private void ErstelleTabellenStil(Word.Application wordApp, string styleName)
         {

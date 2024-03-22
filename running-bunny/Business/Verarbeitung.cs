@@ -5,6 +5,8 @@ using running_bunny.WunschRaumZeitPlanZuweisung;
 using System.Diagnostics;
 using running_bunny.WordErstellung;
 using Word = Microsoft.Office.Interop.Word;
+using System.Runtime.InteropServices;
+using System.IO.Compression;
 namespace running_bunny.Business
 {
     public class Verarbeitung
@@ -27,11 +29,44 @@ namespace running_bunny.Business
 
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
 
-            //Werden im Bin-Verzeichnis erstellt, wenn Dateien bereits vorhanden, werden diese überschrieben
-            CreateWordFiles(veranstaltungsListe, raumZeitPlan, schuelerListeFuerLaufzettel);
+            //Werden im Bin-Verzeichnis erstellt
+            var wordFilesPath = CreateWordFiles(veranstaltungsListe, raumZeitPlan, schuelerListeFuerLaufzettel);
+            ZipFilesToDownloadDeleteFolder(wordFilesPath);
         }
 
-        private static void CreateWordFiles(List<Veranstaltung> veranstaltungsListe, RaumZeitplan raumZeitPlan, List<Schueler> schuelerListeFuerLaufzettel)
+        private void ZipFilesToDownloadDeleteFolder(string wordFilesPath)
+        {
+            var downloadPath = DownloadFolder.GetDownloadPath();
+            var zipFilePathWithoutExtension = Path.Combine(downloadPath, "Bot-Helper");
+            var zipFileEnding = ".zip";
+            if (File.Exists($"{zipFilePathWithoutExtension}{zipFileEnding}"))
+            {
+                zipFilePathWithoutExtension += "_" + DateTime.Now.ToString("dd.MM.yyyy_HH.mm");
+            }
+
+            ZipFile.CreateFromDirectory(wordFilesPath, zipFilePathWithoutExtension + zipFileEnding);
+
+            if (File.Exists(zipFilePathWithoutExtension)) { }
+            Directory.Delete(wordFilesPath, recursive: true);
+        }
+
+        public static class DownloadFolder
+        {
+            private static readonly Guid downloadGuid = new("374DE290-123F-4565-9164-39C4925E467B");
+
+            public static string GetDownloadPath()
+            {
+                return SHGetKnownFolderPath(downloadGuid, 0);
+            }
+
+            [DllImport("shell32",
+                CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
+            private static extern string SHGetKnownFolderPath(
+                [MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags,
+                nint hToken = 0);
+        }
+
+        private static string CreateWordFiles(List<Veranstaltung> veranstaltungsListe, RaumZeitplan raumZeitPlan, List<Schueler> schuelerListeFuerLaufzettel)
         {
             //Erstellung Word-Dateien-Verzeichnis in bin und temporär Speichern der erzeugten Dateien
             //Bin-Verzeichnis holen
@@ -40,18 +75,41 @@ namespace running_bunny.Business
 
             Word.Application wordApp = new Word.Application();
 
-            RaumZeitplanErstellung raumzeitplanWord =
-                new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            raumzeitplanWord.ErstelleWordDatei();
+            try
+            {
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
 
-            var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-            laufzettelErstellung.ErstelleWordDatei();
+                wordApp.Visible = true;
+                wordApp.ShowAnimation = false;
 
-            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
-                = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            anwesenheitsliste.ErstelleWordDatei();
+                RaumZeitplanErstellung raumzeitplanWord =
+                    new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                raumzeitplanWord.ErstelleWordDatei();
 
-            wordApp.Quit();
+                var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+                laufzettelErstellung.ErstelleWordDatei();
+
+                AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
+                    = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                anwesenheitsliste.ErstelleWordDatei();
+
+                stopWatch.Stop();
+                Debug.WriteLine("------------------------------------------------------------------------");
+                Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString() + " ms");
+                Debug.WriteLine("------------------------------------------------------------------------");
+
+                return wordFilesDir.FullName;
+            }
+            catch (Exception)
+            {
+                Directory.Delete(wordFilesDir.FullName, recursive: true);
+                throw;
+            }
+            finally
+            {
+                wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+            }
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
