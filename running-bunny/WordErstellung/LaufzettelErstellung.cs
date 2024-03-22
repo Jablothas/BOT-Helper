@@ -10,10 +10,15 @@ namespace running_bunny.WordErstellung
         private string wordFilesPath { get; set; }
         private Microsoft.Office.Interop.Word.Application wordApp { get; set; }
 
-        public LaufzettelErstellung(Microsoft.Office.Interop.Word.Application wordApp, IEnumerable<Schueler> schueler, string wordFilesPath)
+        public LaufzettelErstellung(IEnumerable<Schueler> schueler, string wordFilesPath)
         {
             SchuelerListe = schueler.ToList();
             this.wordFilesPath = wordFilesPath;
+
+            Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+            wordApp.Visible = true;
+            wordApp.ShowAnimation = false;
+
             this.wordApp = wordApp;
         }
 
@@ -111,6 +116,7 @@ namespace running_bunny.WordErstellung
                 document.SaveAs2(@$"{laufzettelDir}\{klasse.Key}.docx", ReadOnlyRecommended: false);
                 document.Close();
             }
+            wordApp.Quit();
         }
 
         /// <summary>

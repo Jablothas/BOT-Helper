@@ -12,11 +12,16 @@ namespace running_bunny.WordErstellung
         private string wordFilesPath { get; set; }
         private Word.Application wordApp { get; set; }
 
-        public AnwesenheitslisteUnternehmenErstellung(Word.Application wordApp, List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe, string wordFilesPath)
+        public AnwesenheitslisteUnternehmenErstellung(List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe, string wordFilesPath)
         {
             VeranstaltungsListe = veranstalungsListe;
             RaumZeitplanListe = raumZeitplanListe;
             this.wordFilesPath = wordFilesPath;
+
+            Word.Application wordApp = new Word.Application();
+            wordApp.Visible = true;
+            wordApp.ShowAnimation = false;
+
             this.wordApp = wordApp;
         }
 
@@ -110,6 +115,7 @@ namespace running_bunny.WordErstellung
 
             doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
             doc.Close();
+            wordApp.Quit();
         }
 
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
