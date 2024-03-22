@@ -69,7 +69,7 @@ namespace running_bunny.WordErstellung
                     {
                         Word.Paragraph paragraphFirmennamen = doc.Paragraphs.Add();
                         paragraphFirmennamen.set_Style("firmennamenStil");
-                        firmennamenText = "\n" + veranstaltung.UnternehmensName + " - " + veranstaltung.Fachrichtung + "\n\n";
+                        firmennamenText = "\n" + veranstaltung.UnternehmensName + " - " + veranstaltung.Fachrichtung + "\n";
                         paragraphFirmennamen.Range.Text = firmennamenText;
                         
 
@@ -108,6 +108,7 @@ namespace running_bunny.WordErstellung
                             }
                         }
                     }
+                    if(VeranstaltungsListe.IndexOf(veranstaltung) != VeranstaltungsListe.Count -1)
                     doc.Words.Last.InsertBreak(WdBreakType.wdPageBreak);//Seitenumbruch
                 }
             }
