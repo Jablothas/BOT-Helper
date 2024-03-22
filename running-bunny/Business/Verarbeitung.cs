@@ -40,16 +40,16 @@ namespace running_bunny.Business
 
             Word.Application wordApp = new Word.Application();
 
-            //RaumZeitplanErstellung raumzeitplanWord =
-            //    new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            //raumzeitplanWord.ErstelleWordDatei();
+            RaumZeitplanErstellung raumzeitplanWord =
+                new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+            raumzeitplanWord.ErstelleWordDatei();
 
-            //var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-            //laufzettelErstellung.ErstelleWordDatei();
+            var laufzettelErstellung = new LaufzettelErstellung(wordApp, schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+            laufzettelErstellung.ErstelleWordDatei();
 
-            //AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
-            //    = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-            //anwesenheitsliste.ErstelleWordDatei();
+            AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
+                = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+            anwesenheitsliste.ErstelleWordDatei();
 
             wordApp.Quit();
         }
