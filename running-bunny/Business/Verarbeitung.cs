@@ -184,21 +184,12 @@ namespace running_bunny.Business
                     char fruehsteZeit = Char.Parse(excel[row, 5]);
                     liste.Add(new Veranstaltung(id, unternehmensname, fachrichtung, teilnehmer, veranstaltungen, fruehsteZeit));
                 }
-                catch (ArgumentNullException)
+                catch (Exception)
                 {
-
-
-                }
-                catch (FormatException)
-                {
-
                     throw;
-                }
-                catch (OverflowException)
-                {
 
-                    throw;
                 }
+                
             }
 
             return liste;
