@@ -31,9 +31,6 @@ namespace running_bunny.WordErstellung
         {
             var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
 
-            wordApp.Visible = true;
-            wordApp.ShowAnimation = false;
-
             var topAndBottomPaddingCell = wordApp.CentimetersToPoints(0.2f);
 
             //Für jede Klasse ein eigenes Dokument

@@ -26,7 +26,6 @@ namespace running_bunny.WordErstellung
             Word.Document doc = wordApp.Documents.Add();
             try
             {
-                wordApp.Visible = true;
                 // Neues Dokument erstellen
 
                 Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();

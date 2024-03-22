@@ -23,10 +23,8 @@ namespace running_bunny.WordErstellung
         public void ErstelleWordDatei()
         {
             object filename = "Anwesenheitslisten"; //Hard coded
-            Word.Document doc = wordApp.Documents.Add();
-
-            wordApp.Visible = true;
             // Neues Dokument erstellen
+            Word.Document doc = wordApp.Documents.Add();           
 
             Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
 

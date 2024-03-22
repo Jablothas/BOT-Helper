@@ -79,6 +79,8 @@ namespace running_bunny.Business
                 stopWatch.Start();
 
                 Word.Application wordApp = new Word.Application();
+                wordApp.Visible = true;
+                wordApp.ShowAnimation = false;
 
                 RaumZeitplanErstellung raumzeitplanWord =
                     new RaumZeitplanErstellung(wordApp, raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
@@ -95,7 +97,7 @@ namespace running_bunny.Business
 
                 stopWatch.Stop();
                 Debug.WriteLine("------------------------------------------------------------------------");
-                Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString());
+                Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString() + " ms");
                 Debug.WriteLine("------------------------------------------------------------------------");
 
                 return wordFilesDir.FullName;
