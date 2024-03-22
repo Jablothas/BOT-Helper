@@ -1,10 +1,11 @@
 ﻿using running_bunny.Model;
 using Microsoft.Office.Interop.Word;
 using running_bunny.RaumZeitPlan;
+using running_bunny.Business;
 
 namespace running_bunny.WordErstellung
 {
-    public class LaufzettelErstellung
+    public class LaufzettelErstellung : IWordErstellung
     {
         private List<Schueler> SchuelerListe { get; set; }
         private string wordFilesPath { get; set; }
@@ -33,90 +34,101 @@ namespace running_bunny.WordErstellung
 
         public void ErstelleWordDatei()
         {
-            var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
+            try
+            {
+                var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
 
-            var topAndBottomPaddingCell = wordApp.CentimetersToPoints(0.2f);
+                var topAndBottomPaddingCell = wordApp.CentimetersToPoints(0.2f);
 
-            //Für jede Klasse ein eigenes Dokument
-            var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
+                //Für jede Klasse ein eigenes Dokument
+                var schülerGroupedByClass = SchuelerListe.ToLookup(schueler => schueler.Klasse.ToUpper());
 
-            foreach (var klasse in schülerGroupedByClass)
-            {                
-                //neues leeres Dokument erstellen
-                Document document = wordApp.Documents.Add();
-
-                SetMarginsOfWordDocument(document, 25);
-                SetStyle(document, 11, "Arial");
-
-                var anzahlSchülerAufSeite = 0;
-                var übrigeSchüler = klasse.Count();
-
-                var schülerNachNachnamenSortiert = klasse.OrderBy(schueler => schueler.Nachname);
-                //Durch die Schüler iterieren
-                foreach (var schueler in schülerNachNachnamenSortiert)
+                foreach (var klasse in schülerGroupedByClass)
                 {
-                    anzahlSchülerAufSeite++;
-                    übrigeSchüler--;
-                    Paragraph klasseUndNamePara = document.Content.Paragraphs.Add();
-                    klasseUndNamePara.Range.Text = schueler.Klasse + Environment.NewLine
-                        + $"{schueler.Nachname}, {schueler.Vorname}";
-                    document.Range().InsertParagraphAfter();
+                    //neues leeres Dokument erstellen
+                    Document document = wordApp.Documents.Add();
 
-                    //Zeitplan erstellen
-                    var tabellePara = document.Content.Paragraphs.Add();
+                    SetMarginsOfWordDocument(document, 25);
+                    SetStyle(document, 11, "Arial");
 
-                    Table zeitplan = document.Tables.Add(tabellePara.Range, 6, 6);
-                    zeitplan.Range.Paragraphs.SpaceAfter = 0;
-                    zeitplan.Borders.Enable = 1;
-                    zeitplan.AllowAutoFit = true;
-                    SetAutoFitTable(zeitplan, wordApp);
+                    var anzahlSchülerAufSeite = 0;
+                    var übrigeSchüler = klasse.Count();
 
-                    foreach (Row zeile in zeitplan.Rows)
+                    var schülerNachNachnamenSortiert = klasse.OrderBy(schueler => schueler.Nachname);
+                    //Durch die Schüler iterieren
+                    foreach (var schueler in schülerNachNachnamenSortiert)
                     {
-                        //Header für erste Zeile schreiben
-                        if (zeile.Index == 1)
-                        {
-                            FillRowAndSetTopPadding(zeile, topAndBottomPaddingCell, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
-                            zeile.Range.Font.Bold = 1;
+                        anzahlSchülerAufSeite++;
+                        übrigeSchüler--;
+                        Paragraph klasseUndNamePara = document.Content.Paragraphs.Add();
+                        klasseUndNamePara.Range.Text = schueler.Klasse + Environment.NewLine
+                            + $"{schueler.Nachname}, {schueler.Vorname}";
+                        document.Range().InsertParagraphAfter();
 
-                            zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
-                            foreach (Cell headerZelle in zeile.Cells)
+                        //Zeitplan erstellen
+                        var tabellePara = document.Content.Paragraphs.Add();
+
+                        Table zeitplan = document.Tables.Add(tabellePara.Range, 6, 6);
+                        zeitplan.Range.Paragraphs.SpaceAfter = 0;
+                        zeitplan.Borders.Enable = 1;
+                        zeitplan.AllowAutoFit = true;
+                        SetAutoFitTable(zeitplan, wordApp);
+
+                        foreach (Row zeile in zeitplan.Rows)
+                        {
+                            //Header für erste Zeile schreiben
+                            if (zeile.Index == 1)
                             {
-                                headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;          // Vertikale Ausrichtung
-                                headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;  // horizontale Ausrichtung
+                                FillRowAndSetTopPadding(zeile, topAndBottomPaddingCell, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
+                                zeile.Range.Font.Bold = 1;
+
+                                zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
+                                foreach (Cell headerZelle in zeile.Cells)
+                                {
+                                    headerZelle.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;          // Vertikale Ausrichtung
+                                    headerZelle.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;  // horizontale Ausrichtung
+                                }
+                            }
+                            else
+                            {
+                                //Hier sind die Indizes 2 bis 6
+                                var zelleRaumZeitPlanSchueler = schueler.BelegteZeitslots.Single(zelle => (int)zelle.Key == zeile.Index - 1);
+                                var zugehörigerWunsch =
+                                    schueler.Wuensche.FirstOrDefault(wunsch => wunsch.VeranstaltungsId == zelleRaumZeitPlanSchueler.Value.Veranstaltung.Id);
+
+                                FillRowAndSetTopPadding(zeile,
+                                    topAndBottomPaddingCell,
+                                    zelleRaumZeitPlanSchueler.Key.ToString(),
+                                    _uhrzeitenZuZeitslot[zelleRaumZeitPlanSchueler.Key],
+                                    zelleRaumZeitPlanSchueler.Value.Raum.Bezeichnung,
+                                    zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
+                                    zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
+                                    zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
                             }
                         }
-                        else
-                        {
-                            //Hier sind die Indizes 2 bis 6
-                            var zelleRaumZeitPlanSchueler = schueler.BelegteZeitslots.Single(zelle => (int)zelle.Key == zeile.Index - 1);
-                            var zugehörigerWunsch =
-                                schueler.Wuensche.FirstOrDefault(wunsch => wunsch.VeranstaltungsId == zelleRaumZeitPlanSchueler.Value.Veranstaltung.Id);
 
-                            FillRowAndSetTopPadding(zeile,
-                                topAndBottomPaddingCell,
-                                zelleRaumZeitPlanSchueler.Key.ToString(),
-                                _uhrzeitenZuZeitslot[zelleRaumZeitPlanSchueler.Key],
-                                zelleRaumZeitPlanSchueler.Value.Raum.Bezeichnung,
-                                zelleRaumZeitPlanSchueler.Value.Veranstaltung.UnternehmensName,
-                                zelleRaumZeitPlanSchueler.Value.Veranstaltung.Fachrichtung,
-                                zugehörigerWunsch?.Prioritaet.ToString() ?? "-");
+                        document.Content.InsertParagraphAfter();
+                        if (anzahlSchülerAufSeite == 3 && übrigeSchüler != 0)
+                        {
+                            //neue Seite
+                            document.Words.Last.InsertBreak(WdBreakType.wdPageBreak);
+                            anzahlSchülerAufSeite = 0;
                         }
                     }
 
-                    document.Content.InsertParagraphAfter();
-                    if (anzahlSchülerAufSeite == 3 && übrigeSchüler != 0)
-                    {
-                        //neue Seite
-                        document.Words.Last.InsertBreak(WdBreakType.wdPageBreak);
-                        anzahlSchülerAufSeite = 0;
-                    }
+                    document.SaveAs2(@$"{laufzettelDir}\{klasse.Key}.docx", ReadOnlyRecommended: false);
+                    document.Close();
                 }
-
-                document.SaveAs2(@$"{laufzettelDir}\{klasse.Key}.docx", ReadOnlyRecommended: false);
-                document.Close();
             }
-            wordApp.Quit();
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                wordApp.Quit(SaveChanges: WdSaveOptions.wdDoNotSaveChanges);
+                Directory.Delete(wordFilesPath, recursive: true);
+            }
         }
 
         /// <summary>

@@ -1,11 +1,11 @@
 ﻿using running_bunny.RaumZeitPlan;
-using System.Runtime.InteropServices;
 using running_bunny.Model;
 using Word = Microsoft.Office.Interop.Word;
+using running_bunny.Business;
 
 namespace running_bunny.WordErstellung
 {
-    public class RaumZeitplanErstellung
+    public class RaumZeitplanErstellung : IWordErstellung
     {
         public List<Veranstaltung> VeranstaltungsListe { get; set; }
         public List<ZelleRaumZeitplan> RaumZeitplanListe { get; set; } = new List<ZelleRaumZeitplan>();
@@ -17,7 +17,7 @@ namespace running_bunny.WordErstellung
             VeranstaltungsListe = veranstalungsListe;
             RaumZeitplanListe = raumZeitplanListe;
             this.wordFilesPath = wordFilesPath;
-            
+
             Word.Application wordApp = new Word.Application();
             wordApp.Visible = true;
             wordApp.ShowAnimation = false;
@@ -27,11 +27,11 @@ namespace running_bunny.WordErstellung
 
         public void ErstelleWordDatei()
         {
-            string filename = "RaumZeitplan"; //Hard coded
-            Word.Document doc = wordApp.Documents.Add();
             try
             {
+                string filename = "RaumZeitplan"; //Hard coded
                 // Neues Dokument erstellen
+                Word.Document doc = wordApp.Documents.Add();
 
                 Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
                 Word.Paragraph paragraph = doc.Paragraphs.Add();
@@ -90,19 +90,19 @@ namespace running_bunny.WordErstellung
                         }
                     }
                 }
-            }
-            catch (COMException e)
-            {
 
-                throw new Exception("Bitte alle Dokumente mit gleicher Bezeichnung schließen und das Programm neu starten");
+                doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
+                doc.Close();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new Exception(e.Message);
+                throw;
             }
-            doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
-            doc.Close();
-            wordApp.Quit();
+            finally
+            {
+                wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                Directory.Delete(wordFilesPath, recursive: true);
+            }
         }
 
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)

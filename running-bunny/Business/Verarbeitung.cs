@@ -4,7 +4,6 @@ using running_bunny.RaumZeitPlan;
 using running_bunny.WunschRaumZeitPlanZuweisung;
 using System.Diagnostics;
 using running_bunny.WordErstellung;
-using Word = Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
 using System.IO.Compression;
 namespace running_bunny.Business
@@ -78,20 +77,16 @@ namespace running_bunny.Business
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                RaumZeitplanErstellung raumzeitplanWord =
-                    new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                var raumzeitPlanTask = Task.Run(() => raumzeitplanWord.ErstelleWordDatei());
+                var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
 
                 var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-                var laufzettelTask = Task.Run(() => laufzettelErstellung.ErstelleWordDatei());
+                var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
 
-                AnwesenheitslisteUnternehmenErstellung anwesenheitsliste
-                    = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                var anwesenheitsListeTask = Task.Run(() => anwesenheitsliste.ErstelleWordDatei());
+                var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
 
-                await raumzeitPlanTask;
-                await laufzettelTask;
-                await anwesenheitsListeTask;
+                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread });
 
                 stopWatch.Stop();
                 Debug.WriteLine("------------------------------------------------------------------------");
@@ -105,10 +100,23 @@ namespace running_bunny.Business
                 Directory.Delete(wordFilesDir.FullName, recursive: true);
                 throw;
             }
-            finally
+        }
+
+        private static void JoinAllThreads(IEnumerable<Thread> threads)
+        {
+            foreach (var thread in threads)
             {
-                //wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                thread.Join();
             }
+        }
+
+        private static Thread CreateThreadCatchExceptionAndStart(IWordErstellung raumzeitplanWord)
+        {
+            Thread thread = new Thread(() => ((Action)raumzeitplanWord.ErstelleWordDatei).Invoke());
+            thread.Name = nameof(raumzeitplanWord);
+            thread.IsBackground = true;
+            thread.Start();
+            return thread;
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
