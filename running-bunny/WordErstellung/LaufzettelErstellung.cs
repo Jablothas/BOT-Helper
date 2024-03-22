@@ -26,7 +26,6 @@ namespace running_bunny.WordErstellung
             {Zeitslot.E, "12:25 - 13:10" },
         };
 
-        //TODO: Alles in ein Try-Catch stopfen
         public void ErstelleWordDatei()
         {
             var laufzettelDir = Directory.CreateDirectory($@"{wordFilesPath}\Laufzettel");
@@ -75,7 +74,6 @@ namespace running_bunny.WordErstellung
                             FillRowAndSetTopPadding(zeile, topAndBottomPaddingCell, string.Empty, "Zeit", "Raum", "Veranstaltung", "Fachrichtung", "Wunsch");
                             zeile.Range.Font.Bold = 1;
 
-                            //TODO: Hier noch Font ändern maybe
                             zeile.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
                             foreach (Cell headerZelle in zeile.Cells)
                             {

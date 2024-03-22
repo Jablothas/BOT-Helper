@@ -73,12 +73,13 @@ namespace running_bunny.Business
             var workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var wordFilesDir = Directory.CreateDirectory(@$"{workingDir}\Wordfiles");
 
+            Word.Application wordApp = new Word.Application();
+
             try
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                Word.Application wordApp = new Word.Application();
                 wordApp.Visible = true;
                 wordApp.ShowAnimation = false;
 
@@ -93,8 +94,6 @@ namespace running_bunny.Business
                     = new AnwesenheitslisteUnternehmenErstellung(wordApp, veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
                 anwesenheitsliste.ErstelleWordDatei();
 
-                wordApp.Quit();
-
                 stopWatch.Stop();
                 Debug.WriteLine("------------------------------------------------------------------------");
                 Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString() + " ms");
@@ -103,10 +102,14 @@ namespace running_bunny.Business
                 return wordFilesDir.FullName;
             }
             catch (Exception)
-            {                
+            {
                 Directory.Delete(wordFilesDir.FullName, recursive: true);
                 throw;
-            }            
+            }
+            finally
+            {
+                wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+            }
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
