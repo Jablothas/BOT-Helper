@@ -35,9 +35,11 @@
             titleLabel = new Label();
             logoPictureBox = new PictureBox();
             contentPanel = new Panel();
+            loadingAnimation = new PictureBox();
+            panel1 = new Panel();
+            processingInfo = new Label();
             bottomBorder = new Panel();
             leftBorder = new Panel();
-            processingInfo = new Label();
             labelWelcomeMsg = new Label();
             PanelUpload = new Panel();
             InitProcess = new Button();
@@ -47,12 +49,12 @@
             SelectRooms = new Button();
             SelectStudentReset = new Button();
             SelectStudent = new Button();
-            panel1 = new Panel();
             headerPnl.SuspendLayout();
             titleBackgroundPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)BtnClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).BeginInit();
             contentPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)loadingAnimation).BeginInit();
             PanelUpload.SuspendLayout();
             SuspendLayout();
             // 
@@ -116,23 +118,57 @@
             // contentPanel
             // 
             contentPanel.BackColor = SystemColors.Control;
+            contentPanel.Controls.Add(loadingAnimation);
             contentPanel.Controls.Add(panel1);
+            contentPanel.Controls.Add(processingInfo);
             contentPanel.Controls.Add(bottomBorder);
             contentPanel.Controls.Add(leftBorder);
-            contentPanel.Controls.Add(processingInfo);
             contentPanel.Controls.Add(labelWelcomeMsg);
             contentPanel.Controls.Add(PanelUpload);
             contentPanel.Dock = DockStyle.Fill;
             contentPanel.Location = new Point(0, 52);
             contentPanel.Name = "contentPanel";
-            contentPanel.Size = new Size(507, 463);
+            contentPanel.Size = new Size(507, 473);
             contentPanel.TabIndex = 1;
+            // 
+            // loadingAnimation
+            // 
+            loadingAnimation.BackColor = SystemColors.Control;
+            loadingAnimation.Image = Properties.Resources.loading;
+            loadingAnimation.Location = new Point(469, 431);
+            loadingAnimation.Name = "loadingAnimation";
+            loadingAnimation.Size = new Size(35, 27);
+            loadingAnimation.SizeMode = PictureBoxSizeMode.CenterImage;
+            loadingAnimation.TabIndex = 11;
+            loadingAnimation.TabStop = false;
+            loadingAnimation.Visible = false;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Black;
+            panel1.Dock = DockStyle.Left;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1, 468);
+            panel1.TabIndex = 10;
+            // 
+            // processingInfo
+            // 
+            processingInfo.AutoSize = true;
+            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            processingInfo.ForeColor = Color.FromArgb(255, 128, 0);
+            processingInfo.Location = new Point(53, 508);
+            processingInfo.Name = "processingInfo";
+            processingInfo.Size = new Size(403, 21);
+            processingInfo.TabIndex = 7;
+            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
+            processingInfo.Visible = false;
             // 
             // bottomBorder
             // 
             bottomBorder.BackColor = Color.Black;
             bottomBorder.Dock = DockStyle.Bottom;
-            bottomBorder.Location = new Point(0, 458);
+            bottomBorder.Location = new Point(0, 468);
             bottomBorder.Name = "bottomBorder";
             bottomBorder.Size = new Size(506, 5);
             bottomBorder.TabIndex = 9;
@@ -143,27 +179,15 @@
             leftBorder.Dock = DockStyle.Right;
             leftBorder.Location = new Point(506, 0);
             leftBorder.Name = "leftBorder";
-            leftBorder.Size = new Size(1, 463);
+            leftBorder.Size = new Size(1, 473);
             leftBorder.TabIndex = 8;
-            // 
-            // processingInfo
-            // 
-            processingInfo.AutoSize = true;
-            processingInfo.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
-            processingInfo.ForeColor = Color.FromArgb(255, 128, 0);
-            processingInfo.Location = new Point(53, 413);
-            processingInfo.Name = "processingInfo";
-            processingInfo.Size = new Size(403, 21);
-            processingInfo.TabIndex = 7;
-            processingInfo.Text = "Verarbeitung läuft. Bitte das Programm nicht beenden.";
-            processingInfo.Visible = false;
             // 
             // labelWelcomeMsg
             // 
             labelWelcomeMsg.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
             labelWelcomeMsg.Location = new Point(28, 11);
             labelWelcomeMsg.Name = "labelWelcomeMsg";
-            labelWelcomeMsg.Size = new Size(457, 134);
+            labelWelcomeMsg.Size = new Size(457, 159);
             labelWelcomeMsg.TabIndex = 6;
             labelWelcomeMsg.Text = resources.GetString("labelWelcomeMsg.Text");
             // 
@@ -176,21 +200,22 @@
             PanelUpload.Controls.Add(SelectRooms);
             PanelUpload.Controls.Add(SelectStudentReset);
             PanelUpload.Controls.Add(SelectStudent);
-            PanelUpload.Location = new Point(12, 148);
+            PanelUpload.Location = new Point(16, 184);
             PanelUpload.Name = "PanelUpload";
-            PanelUpload.Size = new Size(479, 241);
+            PanelUpload.Size = new Size(479, 306);
             PanelUpload.TabIndex = 5;
             // 
             // InitProcess
             // 
-            InitProcess.BackColor = Color.Silver;
+            InitProcess.BackColor = Color.White;
             InitProcess.FlatStyle = FlatStyle.Flat;
             InitProcess.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            InitProcess.Location = new Point(12, 180);
+            InitProcess.Location = new Point(12, 218);
             InitProcess.Name = "InitProcess";
             InitProcess.Size = new Size(456, 50);
             InitProcess.TabIndex = 4;
-            InitProcess.Text = "Verarbeitung starten";
+            InitProcess.Text = "4. Verarbeitung starten";
+            InitProcess.TextAlign = ContentAlignment.MiddleLeft;
             InitProcess.UseVisualStyleBackColor = false;
             InitProcess.Click += InitProcess_Click;
             // 
@@ -217,7 +242,8 @@
             SelectCompanies.Name = "SelectCompanies";
             SelectCompanies.Size = new Size(456, 50);
             SelectCompanies.TabIndex = 1;
-            SelectCompanies.Text = "Veranstalterliste hochladen";
+            SelectCompanies.Text = "2. Veranstalterliste hochladen";
+            SelectCompanies.TextAlign = ContentAlignment.MiddleLeft;
             SelectCompanies.UseVisualStyleBackColor = false;
             SelectCompanies.Click += SelectCompanies_Click;
             // 
@@ -244,7 +270,8 @@
             SelectRooms.Name = "SelectRooms";
             SelectRooms.Size = new Size(456, 50);
             SelectRooms.TabIndex = 3;
-            SelectRooms.Text = "Raumliste hochladen";
+            SelectRooms.Text = "3. Raumliste hochladen";
+            SelectRooms.TextAlign = ContentAlignment.MiddleLeft;
             SelectRooms.UseVisualStyleBackColor = false;
             SelectRooms.Click += SelectRooms_Click;
             // 
@@ -271,24 +298,16 @@
             SelectStudent.Name = "SelectStudent";
             SelectStudent.Size = new Size(456, 50);
             SelectStudent.TabIndex = 0;
-            SelectStudent.Text = "Wahlliste hochladen";
+            SelectStudent.Text = "1. Wahlliste hochladen";
+            SelectStudent.TextAlign = ContentAlignment.MiddleLeft;
             SelectStudent.UseVisualStyleBackColor = false;
             SelectStudent.Click += BtnSelectStudent_Click;
-            // 
-            // panel1
-            // 
-            panel1.BackColor = Color.Black;
-            panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1, 458);
-            panel1.TabIndex = 10;
             // 
             // MainLayout
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(507, 515);
+            ClientSize = new Size(507, 525);
             Controls.Add(contentPanel);
             Controls.Add(headerPnl);
             FormBorderStyle = FormBorderStyle.None;
@@ -301,6 +320,7 @@
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
             contentPanel.ResumeLayout(false);
             contentPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)loadingAnimation).EndInit();
             PanelUpload.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -326,5 +346,6 @@
         private Panel bottomBorder;
         private Panel leftBorder;
         private Panel panel1;
+        private PictureBox loadingAnimation;
     }
 }
