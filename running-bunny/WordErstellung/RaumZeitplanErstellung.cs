@@ -96,12 +96,12 @@ namespace running_bunny.WordErstellung
             }
             catch (Exception)
             {
+                Directory.Delete(wordFilesPath, recursive: true);
                 throw;
             }
             finally
             {
                 wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
-                Directory.Delete(wordFilesPath, recursive: true);
             }
         }
 

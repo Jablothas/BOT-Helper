@@ -116,18 +116,18 @@ namespace running_bunny.WordErstellung
                         }
                     }
 
-                    document.SaveAs2(@$"{laufzettelDir}\{klasse.Key}.docx", ReadOnlyRecommended: false);
+                    document.SaveAs2(@$"{laufzettelDir.FullName}\{klasse.Key}.docx", ReadOnlyRecommended: false);
                     document.Close();
                 }
             }
             catch (Exception)
             {
+                Directory.Delete(wordFilesPath, recursive: true);
                 throw;
             }
             finally
             {
                 wordApp.Quit(SaveChanges: WdSaveOptions.wdDoNotSaveChanges);
-                Directory.Delete(wordFilesPath, recursive: true);
             }
         }
 
