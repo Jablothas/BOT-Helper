@@ -1,41 +1,41 @@
-﻿using Microsoft.Office.Interop.Word;
-using running_bunny.RaumZeitPlan;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using running_bunny.RaumZeitPlan;
 using running_bunny.Model;
 using Word = Microsoft.Office.Interop.Word;
-using running_bunny.RaumZeitPlan;
+using running_bunny.Business;
 
 namespace running_bunny.WordErstellung
 {
-    public class RaumZeitplanErstellung
+    public class RaumZeitplanErstellung : IWordErstellung
     {
         public List<Veranstaltung> VeranstaltungsListe { get; set; }
         public List<ZelleRaumZeitplan> RaumZeitplanListe { get; set; } = new List<ZelleRaumZeitplan>();
-        public RaumZeitplanErstellung(List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe)
+        private string wordFilesPath { get; set; }
+        private Word.Application wordApp { get; set; }
+
+        public RaumZeitplanErstellung(List<Veranstaltung> veranstalungsListe, List<ZelleRaumZeitplan> raumZeitplanListe, string wordFilesPath)
         {
             VeranstaltungsListe = veranstalungsListe;
             RaumZeitplanListe = raumZeitplanListe;
+            this.wordFilesPath = wordFilesPath;
+
+            Word.Application wordApp = new Word.Application();
+            wordApp.Visible = true;
+            wordApp.ShowAnimation = false;
+
+            this.wordApp = wordApp;
         }
+
         public void ErstelleWordDatei()
         {
-            object filename = "RaumZeitplan"; //Hard coded
-            Word.Application wordApp = new Word.Application();
-            Word.Document doc = wordApp.Documents.Add();
             try
             {
-                wordApp.Visible = true;
+                string filename = "RaumZeitplan"; //Hard coded
                 // Neues Dokument erstellen
+                Word.Document doc = wordApp.Documents.Add();
 
                 Word.Paragraph paragraphUeberschrift = doc.Paragraphs.Add();
                 Word.Paragraph paragraph = doc.Paragraphs.Add();
                 doc.Content.Font.Name = "Arial";
-
-
 
                 //Ueberschrift
                 string ueberschriftStil = "ueberschriftStil";
@@ -70,7 +70,6 @@ namespace running_bunny.WordErstellung
                 {
                     table.Cell(1, i + 1).Range.Text = ((Zeitslot)i).ToString();
                     table.Cell(1, i + 1).Range.Text += LaufzettelErstellung._uhrzeitenZuZeitslot[((Zeitslot)i)];
-
                 }
 
                 string tabellenStil = "TabellenStil";
@@ -89,24 +88,23 @@ namespace running_bunny.WordErstellung
                         {
                             table.Cell(2 + row, 1 + col).Range.Text = zelle.Raum.Bezeichnung != null ? zelle.Raum.Bezeichnung : "";
                         }
-
                     }
                 }
-                // Speichern 
-                doc.SaveAs2(ref filename);
+
+                doc.SaveAs2($@"{wordFilesPath}\{filename}.docx", ReadOnlyRecommended: false);
+                doc.Close();
             }
-            catch (COMException e)
+            catch (Exception)
             {
-
-                throw new Exception("Bitte alle Dokumente mit gleicher Bezeichnung schließen und das Programm neu starten");
+                throw;
             }
-            catch (Exception e)
+            finally
             {
-                throw new Exception(e.Message);
+                wordApp.Quit(SaveChanges: Word.WdSaveOptions.wdDoNotSaveChanges);
+                Directory.Delete(wordFilesPath, recursive: true);
             }
-
-
         }
+
         private void ErstelleUeberschriftStil(Word.Application wordApp, string styleName)
         {
             Word.Style style = wordApp.ActiveDocument.Styles.Add(styleName, Word.WdStyleType.wdStyleTypeParagraphOnly);
@@ -134,7 +132,4 @@ namespace running_bunny.WordErstellung
 
         }
     }
-    
-   
-    
 }

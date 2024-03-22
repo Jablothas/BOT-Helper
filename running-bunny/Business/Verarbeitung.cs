@@ -4,6 +4,8 @@ using running_bunny.RaumZeitPlan;
 using running_bunny.WunschRaumZeitPlanZuweisung;
 using System.Diagnostics;
 using running_bunny.WordErstellung;
+using System.Runtime.InteropServices;
+using System.IO.Compression;
 namespace running_bunny.Business
 {
     public class Verarbeitung
@@ -21,16 +23,100 @@ namespace running_bunny.Business
 
             RaumZeitplan raumZeitPlan = new RaumZeitplan(schuelerListe, veranstaltungsListe, raumListe);
 
-            SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung = 
+            SchuelerZuweisungZuZeitplan wunschRaumZeitPlanZuweisungErstellung =
                 new SchuelerZuweisungZuZeitplan(raumZeitPlan.SchuelerListe, raumZeitPlan.RaumZeitplanListe);
 
             List<Schueler> schuelerListeFuerLaufzettel = wunschRaumZeitPlanZuweisungErstellung.SchuelerListe;
-            List<ZelleRaumZeitplan> zellenListeFuerAnwesenheitslisteUNDRaumzeitplan = wunschRaumZeitPlanZuweisungErstellung.ZelleRaumZeitplan;
 
-            RaumZeitplanErstellung raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe);
-            raumzeitplanWord.ErstelleWordDatei();
-            var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel);
-            laufzettelErstellung.ErstelleWordDatei();
+            //Werden im Bin-Verzeichnis erstellt
+            var wordFilesPath = CreateWordFiles(veranstaltungsListe, raumZeitPlan, schuelerListeFuerLaufzettel).GetAwaiter().GetResult();
+            ZipFilesToDownloadDeleteFolder(wordFilesPath);
+        }
+
+        private void ZipFilesToDownloadDeleteFolder(string wordFilesPath)
+        {
+            var downloadPath = DownloadFolder.GetDownloadPath();
+            var zipFilePathWithoutExtension = Path.Combine(downloadPath, "Bot-Helper");
+            var zipFileEnding = ".zip";
+            if (File.Exists($"{zipFilePathWithoutExtension}{zipFileEnding}"))
+            {
+                zipFilePathWithoutExtension += "_" + DateTime.Now.ToString("dd.MM.yyyy_HH.mm");
+            }
+
+            ZipFile.CreateFromDirectory(wordFilesPath, zipFilePathWithoutExtension + zipFileEnding);
+
+            if (File.Exists(zipFilePathWithoutExtension)) { }
+            Directory.Delete(wordFilesPath, recursive: true);
+        }
+
+        public static class DownloadFolder
+        {
+            private static readonly Guid downloadGuid = new("374DE290-123F-4565-9164-39C4925E467B");
+
+            public static string GetDownloadPath()
+            {
+                return SHGetKnownFolderPath(downloadGuid, 0);
+            }
+
+            [DllImport("shell32",
+                CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
+            private static extern string SHGetKnownFolderPath(
+                [MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags,
+                nint hToken = 0);
+        }
+
+        private static async Task<string> CreateWordFiles(List<Veranstaltung> veranstaltungsListe, RaumZeitplan raumZeitPlan, List<Schueler> schuelerListeFuerLaufzettel)
+        {
+            //Erstellung Word-Dateien-Verzeichnis in bin und temporär Speichern der erzeugten Dateien
+            //Bin-Verzeichnis holen
+            var workingDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var wordFilesDir = Directory.CreateDirectory(@$"{workingDir}\Wordfiles");
+
+            try
+            {
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
+
+                var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+                var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
+
+                var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
+
+                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread });
+
+                stopWatch.Stop();
+                Debug.WriteLine("------------------------------------------------------------------------");
+                Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString() + " ms");
+                Debug.WriteLine("------------------------------------------------------------------------");
+
+                return wordFilesDir.FullName;
+            }
+            catch (Exception)
+            {
+                Directory.Delete(wordFilesDir.FullName, recursive: true);
+                throw;
+            }
+        }
+
+        private static void JoinAllThreads(IEnumerable<Thread> threads)
+        {
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
+        }
+
+        private static Thread CreateThreadCatchExceptionAndStart(IWordErstellung raumzeitplanWord)
+        {
+            Thread thread = new Thread(() => ((Action)raumzeitplanWord.ErstelleWordDatei).Invoke());
+            thread.Name = nameof(raumzeitplanWord);
+            thread.IsBackground = true;
+            thread.Start();
+            return thread;
         }
 
         private List<Schueler> SchuelerErstellen(string[,] excel)
@@ -72,7 +158,7 @@ namespace running_bunny.Business
                     var wunsch = new Wunsch();
                     var prio = spalte - 2;
                     var unternehmenId = excel[zeile, spalte];
-                    
+
                     if (!string.IsNullOrWhiteSpace(unternehmenId))
                     {
                         if (!int.TryParse(unternehmenId, out var unternehmendIdAsInt))
@@ -86,12 +172,6 @@ namespace running_bunny.Business
                 }
                 schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
-            }
-            Debug.WriteLine("////////////////////////////");
-            Debug.WriteLine("SCHÜLERLISTE");
-            foreach(Schueler schueler in schuelerListe)
-            {
-                Debug.WriteLine($"Vorname: {schueler.Vorname}     Nachname: {schueler.Nachname}");
             }
             return schuelerListe;
         }
@@ -111,21 +191,12 @@ namespace running_bunny.Business
                     char fruehsteZeit = Char.Parse(excel[row, 5]);
                     liste.Add(new Veranstaltung(id, unternehmensname, fachrichtung, teilnehmer, veranstaltungen, fruehsteZeit));
                 }
-                catch (ArgumentNullException)
+                catch (Exception)
                 {
-
-
-                }
-                catch (FormatException)
-                {
-
                     throw;
-                }
-                catch (OverflowException)
-                {
 
-                    throw;
                 }
+                
             }
 
             return liste;
@@ -188,7 +259,6 @@ namespace running_bunny.Business
 
                 raumListe.Add(objektRaum);
             }
-            // Debug.WriteLine("fertig");
             return raumListe;
         }
 

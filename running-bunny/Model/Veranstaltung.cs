@@ -1,4 +1,6 @@
-﻿namespace running_bunny.Model
+﻿using running_bunny.RaumZeitPlan;
+
+namespace running_bunny.Model
 {
     public class Veranstaltung
     {
@@ -18,6 +20,7 @@
         public int MaxAnzahlTeilnehmer { get; set; }
         public int MaxAnzahlVerantstaltungen { get; set; }
         public RaumZeitPlan.Zeitslot FruehsterZeitSlot { get; set; }
+        public List<Zeitslot> Zeitslots { get; set; } = new List<Zeitslot>();
         
 
         private int anzahlWünsche = 0;

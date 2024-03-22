@@ -17,23 +17,44 @@ namespace running_bunny
         // Globals
         private static Dictionary<string, string> FilePaths = new Dictionary<string, string>();
 
-        public MainLayout()
+        public MainLayout(Icon appIcon)
         {
+            Icon = appIcon;
             InitializeComponent();
         }
 
-        private void InitProcess_Click(object sender, EventArgs e)
+        private async void InitProcess_Click(object sender, EventArgs e)
         {
             if (FilePaths.Count != 3)
             {
-                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.");
+                MessageBox.Show("Sie müssen alle benötigten Daten voher hochladen.", "Halt!");
                 return;
             }
-            loadingAnimation.Visible = true;
+            LoadProcessAnimation(true);
             var verarbeitung = new Verarbeitung();
-            verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]);
-            loadingAnimation.Visible = false;
-            MessageBox.Show("Erfolg!", "Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nur schließen.");
+            await Task.Run(() => verarbeitung.run(FilePaths[nameof(SelectStudent)], FilePaths[nameof(SelectCompanies)], FilePaths[nameof(SelectRooms)]));
+            LoadProcessAnimation(false);
+            MessageBox.Show("Die Verarbeitung wurde erfolgreich abgeschlossen.\nSie können das Programm nun schließen.", "Erfolg!");
+            processingInfo.Visible = false;
+            ForwardToDownloads();
+        }
+
+        private void LoadProcessAnimation(bool status)
+        {
+            if(status)
+            {
+                processingInfo.Visible = true;
+                PanelUpload.Enabled = false;
+                InitProcess.Text = "Verarbeitung läuft! Bitte warten.";
+                InitProcess.BackColor = Color.YellowGreen;
+            }
+            else
+            {
+                processingInfo.Visible = false;
+                PanelUpload.Enabled = true;
+                InitProcess.Text = "Verarbeitung starten";
+                InitProcess.BackColor = Color.White;
+            }
         }
 
         static void OpenExcelFileDialog(Button btn, Button btnReset)
@@ -85,7 +106,7 @@ namespace running_bunny
             SelectStudent.Enabled = true;
             SelectStudent.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectStudent));
-            SelectStudent.Text = "Schülerliste hochladen";
+            SelectStudent.Text = "1. Wahlliste hochladen";
         }
 
         private void SelectRooms_Click(object sender, EventArgs e)
@@ -99,7 +120,7 @@ namespace running_bunny
             SelectRooms.Enabled = true;
             SelectRooms.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectRooms));
-            SelectRooms.Text = "Raumliste hochladen";
+            SelectRooms.Text = "3 .Raumliste hochladen";
         }
 
         private void SelectCompanies_Click(object sender, EventArgs e)
@@ -113,7 +134,14 @@ namespace running_bunny
             SelectCompanies.Enabled = true;
             SelectCompanies.BackColor = Color.Silver;
             FilePaths.Remove(nameof(SelectCompanies));
-            SelectCompanies.Text = "Unternehmensliste hochladen";
+            SelectCompanies.Text = "2. Veranstalterliste hochladen";
         }
+        private void ForwardToDownloads()
+        {
+            string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
+            if (System.IO.Directory.Exists(downloadsPath)) Process.Start("explorer.exe", downloadsPath);
+        }
+
+
     }
 }
