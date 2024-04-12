@@ -74,8 +74,8 @@ namespace running_bunny.Business
 
             try
             {
-                var stopWatch = new Stopwatch();
-                stopWatch.Start();
+                var txtScore = new ScoreErstellungTxt(wordFilesDir.FullName, schuelerListeFuerLaufzettel);
+                var txtScoreThread = CreateThreadCatchExceptionAndStart(txtScore);
 
                 var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
                 var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
@@ -86,12 +86,9 @@ namespace running_bunny.Business
                 var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
                 var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
 
-                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread });
 
-                stopWatch.Stop();
-                Debug.WriteLine("------------------------------------------------------------------------");
-                Debug.WriteLine("ERSTELLUNG WORD-DATEIEN DAUER: " + stopWatch.ElapsedMilliseconds.ToString() + " ms");
-                Debug.WriteLine("------------------------------------------------------------------------");
+
+                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread, txtScoreThread});
 
                 return wordFilesDir.FullName;
             }
