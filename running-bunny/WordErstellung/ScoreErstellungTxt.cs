@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace running_bunny.WordErstellung
 {
-    public class ScoreErstellungTxt : IWordErstellung
+    public class ScoreErstellungTxt
     {
         private string WordFilesPath { get; set; }
         private List<Schueler> ListeSchueler { get; set; }
@@ -20,26 +20,32 @@ namespace running_bunny.WordErstellung
             WordFilesPath = wordFilesPath;
             ListeSchueler = schuelerListe;
         }
-        public void ErstelleWordDatei()
+
+        public void ErstelleScoreTxt()
         {
             object filename = "SchülerScore";
+            var binDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);            
 
-            using (StreamWriter sw = File.CreateText($@"{WordFilesPath}\{filename}.txt"))
+            using (StreamWriter sw = File.CreateText($@"{binDir}\{filename}{DateTime.Now:_yyyy_MM_dd}.txt"))
             {
                 ListeSchueler.OrderBy(schueler => schueler.SummeGewichtung);
-                int summe = 0;
+                double summeErzielterScore = 0;
+                int summeMoeglicherScore = 0;
                 sw.WriteLine("SchülerScore");
                 sw.WriteLine("");
                 foreach(Schueler schueler in ListeSchueler)
                 {
                     sw.WriteLine(schueler.Vorname + " " + schueler.Nachname + "     Score: " + schueler.SummeGewichtung);
-                    summe = summe + schueler.SummeGewichtung;
+
+                    summeErzielterScore = summeErzielterScore + schueler.SummeGewichtung;
+                    summeMoeglicherScore += schueler.OptimalerScore;
                 }
 
                 sw.WriteLine("");
-                sw.WriteLine("Gesamtsumme: " + summe);
+                sw.WriteLine("Gesamtsumme erzielt: " + summeErzielterScore);
+                sw.WriteLine("Gesamtsumme möglich: " + summeMoeglicherScore);
+                sw.WriteLine("Anteil erfüllter Wünsche in %: " + Math.Round(summeErzielterScore/ summeMoeglicherScore * 100, 2) + "%");
             }
-
         }
     }
 }

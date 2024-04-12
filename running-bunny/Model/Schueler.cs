@@ -9,6 +9,7 @@ namespace running_bunny.Model
         public List<Wunsch> Wuensche { get; set; }
         public string Klasse { get; set; }
         public int SummeGewichtung { get; set; }
+        public int OptimalerScore { get; set; }
         public IDictionary<Zeitslot, ZelleRaumZeitplan> BelegteZeitslots { get; set; } = new Dictionary<Zeitslot, ZelleRaumZeitplan>();
     }
 

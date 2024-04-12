@@ -31,6 +31,9 @@ namespace running_bunny.Business
             //Werden im Bin-Verzeichnis erstellt
             var wordFilesPath = CreateWordFiles(veranstaltungsListe, raumZeitPlan, schuelerListeFuerLaufzettel).GetAwaiter().GetResult();
             ZipFilesToDownloadDeleteFolder(wordFilesPath);
+
+            var txtScore = new ScoreErstellungTxt(wordFilesPath, schuelerListeFuerLaufzettel);
+            txtScore.ErstelleScoreTxt();
         }
 
         private void ZipFilesToDownloadDeleteFolder(string wordFilesPath)
@@ -74,21 +77,18 @@ namespace running_bunny.Business
 
             try
             {
-                var txtScore = new ScoreErstellungTxt(wordFilesDir.FullName, schuelerListeFuerLaufzettel);
-                var txtScoreThread = CreateThreadCatchExceptionAndStart(txtScore);
+                //var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                //var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
 
-                var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
+                //var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+                //var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
 
-                var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-                var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
-
-                var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
+                //var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                //var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
 
 
 
-                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread, txtScoreThread});
+                //JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread, txtScoreThread});
 
                 return wordFilesDir.FullName;
             }
@@ -148,6 +148,7 @@ namespace running_bunny.Business
                     throw new ArgumentException($"Die Klasse, der Vorname oder der Nachname sind leer. Fehler in Zeile {actualExcelLine}");
                 }
 
+                int optimalerScore = 0;
                 var wuensche = new List<Wunsch>();
                 //TODO: Wie darauf reagieren, wenn verschiedene Wahlen gefüllt sind
                 for (int spalte = 3; spalte < excel.GetLength(1); spalte++)
@@ -164,9 +165,14 @@ namespace running_bunny.Business
                         }
                         wunsch.Prioritaet = prio;
                         wunsch.VeranstaltungsId = unternehmendIdAsInt;
+                        if (wunsch.Prioritaet != 6)
+                        {
+                            optimalerScore += 7 - wunsch.Prioritaet;
+                        }
                         wuensche.Add(wunsch);
                     }
                 }
+                schueler.OptimalerScore = optimalerScore;
                 schueler.Wuensche = wuensche;
                 schuelerListe.Add(schueler);
             }
