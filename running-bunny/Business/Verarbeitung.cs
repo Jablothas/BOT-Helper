@@ -77,18 +77,18 @@ namespace running_bunny.Business
 
             try
             {
-                //var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                //var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
+                var raumzeitplanWord = new RaumZeitplanErstellung(raumZeitPlan.VeranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var raumzeitPlanThread = CreateThreadCatchExceptionAndStart(raumzeitplanWord);
 
-                //var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
-                //var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
+                var laufzettelErstellung = new LaufzettelErstellung(schuelerListeFuerLaufzettel, wordFilesDir.FullName);
+                var laufzettelThread = CreateThreadCatchExceptionAndStart(laufzettelErstellung);
 
-                //var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
-                //var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
+                var anwesenheitsliste = new AnwesenheitslisteUnternehmenErstellung(veranstaltungsListe, raumZeitPlan.RaumZeitplanListe, wordFilesDir.FullName);
+                var anwesenheitslisteThread = CreateThreadCatchExceptionAndStart(anwesenheitsliste);
 
 
 
-                //JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread, txtScoreThread});
+                JoinAllThreads(new[] { raumzeitPlanThread, laufzettelThread, anwesenheitslisteThread });
 
                 return wordFilesDir.FullName;
             }
